@@ -1,0 +1,123 @@
+/* ===== Header and Logo ===== */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  /* background-color: #ffffff; */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); */
+}
+
+.logoImg {
+  max-width: 100px;
+  margin-left: 20px;
+  height: auto;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  background-color: #4b5563;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Buttons (Neumorphic Style) ===== */
+
+.navButton,
+.button {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), inset 0 -2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.navButton:hover,
+.button:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.navButton:active,
+.button:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navButton:focus-visible,
+.button:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* ===== Responsive Header ===== */
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .logoImg {
+    max-width: 80px;
+    margin-left: 0;
+    margin-bottom: 1rem;
+  }
+
+  .topRight {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .navButton {
+    width: 100%;
+    text-align: left;
+  }
+
+  .avatar {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoImg {
+    max-width: 60px;
+  }
+
+  .navButton {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
