@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', // Important for custom domains like jewad.me
+  base: '/Archiv/' // obligatoire pour GitHub Pages
 })
