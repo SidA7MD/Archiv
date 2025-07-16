@@ -2,15 +2,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 32px;
-  position: relative;
-  top: 30px;
-  padding: 60px 32px;
-  /* background: linear-gradient(to bottom right, #f6f8fc, #eef1f7); */
+  padding: 100px 32px;
   min-height: 60vh;
   font-family: 'Inter', 'Segoe UI', sans-serif;
+  /* background: linear-gradient(to bottom right, #f9fafb, #f0f2f7); */
 }
 
-/* Real-world inspired card */
 .s1-card {
   position: relative;
   background: white;
@@ -23,7 +20,7 @@
   align-items: center;
   transition: all 0.3s ease;
   cursor: pointer;
-  transform-style: preserve-3d;
+  overflow: hidden;
 }
 
 .s1-card:hover {
@@ -32,52 +29,44 @@
   border-color: rgba(0, 0, 0, 0.05);
 }
 
-/* Icon bubble */
 .s1-icon {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: linear-gradient(to top right, #f0f3ff, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.03);
-  transition: background 0.3s ease;
+  background: var(--icon-gradient, linear-gradient(to top right, #f0f3ff, #ffffff));
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
 }
 
 .s1-card:hover .s1-icon {
-  background: linear-gradient(to top right, #e6e9f8, #fff);
+  transform: scale(1.1);
 }
 
-/* Title */
 .s1-title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1a1a1a;
   text-align: center;
-  margin-bottom: 8px;
 }
 
-/* Subtitle tags */
-.s1-subtitles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: #666;
-  justify-content: center;
-  margin-top: 8px;
+.s1-wave {
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to right, #ccc, #999);
+  opacity: 0.06;
+  transform: rotate(30deg);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Optional: Active tag style */
-.s1-subtitles span {
-  background-color: #f1f5f9;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  color: #444;
-  transition: background 0.3s ease;
+.s1-card > *:not(.s1-wave) {
+  z-index: 1;
 }
