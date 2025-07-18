@@ -45,8 +45,8 @@
 }
 
 .card {
-  width: 250px;
-  height: 350px;
+  width: 300px;
+  height: 400px;
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   background-color: white;

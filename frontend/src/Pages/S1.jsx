@@ -5,7 +5,7 @@ const cards = [
   {
     title: 'Cours',
     path: '/cours',
-    image: 'https://erasmusplus.ma/wp-content/uploads/2020/03/e-learning-icones-.jpg',
+    image: 'https://i.pinimg.com/736x/ea/c1/94/eac194c170210319a1c0906a4169ad79.jpg',
     icon: '📚',
     date: '30.11.2023',
     description: 'Accédez à tous les documents et ressources du cours',
@@ -14,7 +14,7 @@ const cards = [
   {
     title: 'Devoirs',
     path: '/devoirs',
-    image: 'https://cdn.evopresse.ca/content/user_files/sites/2/2023/04/20005909/ZMayotte_devoirs_EF.jpg',
+    image: 'https://i.pinimg.com/736x/53/ad/2b/53ad2bc43869800df382394fa29419d6.jpg',
     icon: '📝',
     date: '28.11.2023',
     description: 'Consultez et soumettez vos devoirs',
@@ -23,7 +23,7 @@ const cards = [
   {
     title: 'Compositions',
     path: '/compositions',
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1373&q=80',
+    image: 'https://i.pinimg.com/736x/65/f7/4a/65f74ad156b5b5fcd256695209b114e7.jpg?',
     icon: '📊',
     date: '15.12.2023',
     description: 'Préparez vos examens avec les annales',
@@ -32,7 +32,7 @@ const cards = [
   {
     title: 'TD',
     path: '/td',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNUqnutUlDyErbjmQaZOFehCaTD6Ize8FNw&s',
+    image: 'https://png.pngtree.com/png-vector/20230729/ourlarge/pngtree-meeting-clipart-group-of-people-sitting-around-the-table-cartoon-vector-png-image_6811881.png',
     icon: '🧮',
     date: '05.12.2023',
     description: 'Travaux dirigés et exercices pratiques',
@@ -41,7 +41,7 @@ const cards = [
   {
     title: 'TP',
     path: '/tp',
-    image: 'https://media.licdn.com/dms/image/v2/D4E0BAQEpF_t8GV2wjw/company-logo_200_200/company-logo_200_200/0/1680709072047?e=2147483647&v=beta&t=x3gkQ2xKwwRDlIysw1JVA-vbvh39EEZvd4WFy-x7O0Y',
+    image: 'https://media.gettyimages.com/id/519765301/vector/overhead-view-of-people-discussing-at-round-table.jpg?s=612x612&w=gi&k=20&c=-6vYwNdEFXbTh5e4vfHDXa5vLzD2cskB2ReOwAzth2g=',
     icon: '🔬',
     date: '12.12.2023',
     description: 'Travaux pratiques et laboratoires',
@@ -50,7 +50,7 @@ const cards = [
   {
     title: 'Rattrapages',
     path: '/rattrapages',
-    image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+    image: 'https://i.pinimg.com/736x/fd/6f/58/fd6f58b85308c304c7dd406453ff42f8.jpg',
     icon: '🔄',
     date: '20.01.2024',
     description: 'Documents pour les sessions de rattrapage',
