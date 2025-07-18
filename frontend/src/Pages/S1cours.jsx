@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   FaLanguage,
   FaLaptopCode,
@@ -7,7 +8,6 @@ import {
   FaGlobe,
 } from "react-icons/fa";
 
-// Unique, vibrant gradients for each card's background
 const cardBackgroundGradients = [
   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
   "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
@@ -20,7 +20,6 @@ const cardBackgroundGradients = [
   "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
 ];
 
-// Map course names to icons for fallback
 const iconMap = {
   Français: <FaLanguage aria-label="Français" />,
   Anglais: <FaLanguage aria-label="Anglais" />,
@@ -31,32 +30,39 @@ const iconMap = {
   "Technologies Web": <FaGlobe aria-label="Web" />,
 };
 
+function slugify(text) {
+  return text
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+}
+
 function CourseCard({ course, index }) {
   const icon =
       course.icon ||
       iconMap[course.name] ||
       <span style={styles.initial}>{course.name.charAt(0)}</span>;
 
-  // Apply a unique gradient to each card
   const cardStyle = {
     ...styles.card,
     background: cardBackgroundGradients[index % cardBackgroundGradients.length],
   };
 
   return (
-      <div style={cardStyle} className="course-card">
-        <div style={styles.cardMenu}>
-          <span style={styles.backArrow} aria-label="back" tabIndex={0}>←</span>
-          <span style={styles.menuDots} aria-label="menu" tabIndex={0}>⋮</span>
+      <Link to={`/cours/${slugify(course.name)}`} style={{ textDecoration: 'none' }}>
+        <div style={cardStyle} className="course-card">
+          <div style={styles.avatarWrapper}>
+            <div style={styles.avatar}>{icon}</div>
+          </div>
+          <div style={styles.cardContent}>
+            <h3 style={styles.courseTitle}>{course.name}</h3>
+            <p style={styles.courseDesc}>Cours de {course.name}</p>
+          </div>
         </div>
-        <div style={styles.avatarWrapper}>
-          <div style={styles.avatar}>{icon}</div>
-        </div>
-        <div style={styles.cardContent}>
-          <h3 style={styles.courseTitle}>{course.name}</h3>
-          <p style={styles.courseDesc}>Cours de {course.name}</p>
-        </div>
-      </div>
+      </Link>
   );
 }
 
@@ -109,43 +115,114 @@ export default function CoursS1() {
         <style>{`
         body {
           background-color: #f8f9fa;
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+            sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
+        
         .course-card {
           transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        
         .course-card:hover {
           transform: translateY(-10px) scale(1.03);
-          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
         }
 
         /* Media Query for smaller screens */
-        @media (max-width: 768px) {
+       @media (max-width: 768px) {
           .course-card {
-            min-height: 280px !important;
-            max-width: 90% !important; /* Allow card to be more fluid */
+            min-height: 240px !important;
             padding: 25px 15px !important;
           }
+          
           .course-card .avatar {
-            width: 70px !important;
-            height: 70px !important;
-            font-size: 2rem !important;
+            width: 60px !important;
+            height: 60px !important;
+            font-size: 1.8rem !important;
           }
+          
           .course-card .course-title {
-            font-size: 1.2rem !important;
+            font-size: 1.1rem !important;
+            margin: 0 0 8px !important;
           }
+          
           .course-card .course-desc {
-            font-size: 0.9rem !important;
+            font-size: 0.85rem !important;
           }
+          
           .grid {
-            grid-template-columns: 1fr !important; /* Single column on mobile */
-            gap: 30px !important;
+            gap: 20px !important;
           }
+          
           .container {
-             padding: 40px 20px !important;
+            padding: 30px 20px !important;
           }
-           .title {
-            font-size: 2.5rem !important;
-            margin-bottom: 60px !important;
+          
+          .title {
+            font-size: 2rem !important;
+            margin-bottom: 40px !important;
+          }
+
+          .section-title {
+            font-size: 1.3rem !important;
+            margin-bottom: 30px !important;
+          }
+        }
+
+        /* Mobile devices */
+        @media (max-width: 480px) {
+          .course-card {
+            min-height: 200px !important;
+            padding: 20px 15px !important;
+            border-radius: 18px !important;
+          }
+          
+          .course-card .avatar {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 1.5rem !important;
+          }
+          
+          .course-card .course-title {
+            font-size: 1rem !important;
+          }
+          
+          .course-card .course-desc {
+            font-size: 0.8rem !important;
+          }
+          
+          .grid {
+            gap: 15px !important;
+          }
+          
+          .container {
+            padding: 20px 15px !important;
+          }
+          
+          .title {
+            font-size: 1.8rem !important;
+            margin-bottom: 30px !important;
+          }
+
+          .section-title {
+            font-size: 1.2rem !important;
+            margin-bottom: 20px !important;
+            padding-bottom: 8px !important;
+          }
+        }
+
+        /* Very small devices */
+        @media (max-width: 360px) {
+          .course-card {
+            min-height: 180px !important;
+          }
+          
+          .title {
+            font-size: 1.6rem !important;
           }
         }
       `}</style>
@@ -157,7 +234,7 @@ const styles = {
   container: {
     maxWidth: 1200,
     margin: "0 auto",
-    padding: "60px 40px 80px", // Increased container padding
+    padding: "60px 40px 80px",
     fontFamily: "'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif",
     minHeight: "100vh",
   },
@@ -166,30 +243,29 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center",
     color: "#2c3e50",
-    marginBottom: 80, // Increased margin
+    marginBottom: 80,
   },
   section: {
-    marginBottom: 80, // Increased margin
+    marginBottom: 80,
   },
   sectionTitle: {
     fontSize: "1.5rem",
     color: "#34495e",
     borderBottom: "2px solid #e0e0e0",
     paddingBottom: 12,
-    marginBottom: 50, // Increased margin
+    marginBottom: 50,
     fontWeight: 700,
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-    gap: "80px", // Increased gap between cards
+    gap: "80px",
     justifyItems: "center",
   },
-  // CARD
   card: {
     position: "relative",
-    width: "100%",
-    maxWidth: 290, // Slightly increased max-width for balance
+    width: "400px",
+    maxWidth: 290,
     minHeight: 320,
     color: "#fff",
     borderRadius: 24,
@@ -201,19 +277,8 @@ const styles = {
     justifyContent: "center",
     textAlign: "center",
     overflow: "hidden",
+    cursor: "pointer",
   },
-  cardMenu: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    right: 20,
-    display: "flex",
-    justifyContent: "space-between",
-    fontSize: "1.2rem",
-    color: "rgba(255, 255, 255, 0.8)",
-  },
-  backArrow: { cursor: "pointer", userSelect: "none" },
-  menuDots: { cursor: "pointer", userSelect: "none", fontWeight: "bold" },
   avatarWrapper: {
     marginBottom: 25,
   },
