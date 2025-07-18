@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Global components
 import Header from './components/Header';
-import Background from './components/Background';
+// import Background from './components/Background';
 
 // Auth & Home
 import Home from './components/Home';
@@ -25,7 +25,7 @@ function App() {
     return (
         <BrowserRouter>
             <Header />
-            <Background />
+            {/*<Background />*/}
             <Routes>
                 {/* General routes */}
                 <Route path="/" element={<Home />} />

@@ -79,7 +79,8 @@ const S1 = () => {
           style={{
             position: 'relative',
             height: '420px',
-            borderRadius: '20px',
+            borderRadius: '15px',
+            // border: '1px solid #fff',
             overflow: 'hidden',
             backgroundImage: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5)), url(${card.image})`,
             backgroundSize: 'cover',
@@ -92,14 +93,14 @@ const S1 = () => {
           //  alignItems:'center',
             justifyContent: 'flex-end',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-10px)';
-            e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
-          }}
+          // onMouseEnter={(e) => {
+          //   // e.currentTarget.style.transform = 'translateY(-10px)';
+          //   // e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.2)';
+          // }}
+          // onMouseLeave={(e) => {
+          //   e.currentTarget.style.transform = 'translateY(0)';
+          //   e.currentTarget.style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+          // }}
         >
           <div
             style={{
