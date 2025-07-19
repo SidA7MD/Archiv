@@ -2,13 +2,13 @@
    Premium Header Styles
    ============================= */
 
-/* Base Header Styles */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
-  background: rgba(255, 255, 255, 0.98);
+  background-color: #E6F4EA;
+
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
@@ -76,7 +76,7 @@
 }
 
 .helpBtn:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .icon {
@@ -85,34 +85,36 @@
 }
 
 .helpBtn:hover .icon {
-  color: #6366f1;
+  color: #10b981;
   transform: scale(1.1);
 }
 
 /* =================================
-   Revolutionary Help Panel Design
+   Premium Green Help Panel Design
    ================================= */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
 
-/* Help Panel - Glassmorphism Effect */
 .helpPanel {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
-  width: 450px;
-  max-width: 100%;
-  /* REVOLUTIONARY new background */
-  background: rgba(249, 250, 251, 0.75);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  background: rgba(236, 253, 245, 0.95);
+  /* backdrop-filter: blur(20px) saturate(180%); */
+  /* -webkit-backdrop-filter: blur(30px) saturate(180%); */
+  /* box-shadow: -15px 0 50px rgba(0, 0, 0, 0.15); */
   z-index: 1100;
   transform: translateX(100%);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
 }
 
 .helpPanel::before {
@@ -122,9 +124,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(17, 24, 39, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  /* background: rgba(17, 24, 39, 0.5); */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -134,8 +136,8 @@
 .helpPanel.open {
   transform: translateX(0);
   box-shadow:
-          -20px 0 60px rgba(0, 0, 0, 0.2),
-          0 0 30px rgba(99, 102, 241, 0.1);
+          -25px 0 80px rgba(0, 0, 0, 0.25),
+          0 0 40px rgba(6, 188, 128, 0.15);
 }
 
 .helpPanel.open::before {
@@ -146,7 +148,7 @@
 /* Panel Content */
 .panelContent {
   flex: 1;
-  padding: 3rem 2.5rem;
+  padding: 3.5rem 2.5rem;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   position: relative;
@@ -161,22 +163,23 @@
   height: 1px;
   background: linear-gradient(90deg,
   transparent 0%,
-  rgba(99, 102, 241, 0.2) 50%,
+  rgba(16, 185, 129, 0.3) 50%,
   transparent 100%
   );
 }
 
 .panelTitle {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+  background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   position: relative;
   padding-bottom: 1.5rem;
   letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .panelTitle::after {
@@ -184,89 +187,129 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
+  width: 80px;
   height: 6px;
   background: linear-gradient(90deg,
-  #6366f1 0%,
-  #8b5cf6 50%,
-  #ec4899 100%
+  #065f46 0%,
+  #10b981 50%,
+  #a7f3d0 100%
   );
   border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 .panelText {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
-  color: #374151; /* Darker text for better readability */
+  color: #1f2937;
   margin-bottom: 3rem;
   position: relative;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
   font-weight: 400;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s ease;
 }
 
-/* Contact Links - GREAT Buttons */
+.panelText:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact Links - Icon Buttons */
 .contactLinks {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 1.25rem;
-  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
 }
 
 .contactLink {
-  padding: 1.25rem 1.5rem;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #374151;
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.contactLink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .contactLink:hover {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: #ffffff;
-  transform: translateY(-4px) scale(1.03);
+  transform: translateY(-6px) scale(1.05);
   box-shadow:
-          0 10px 25px rgba(99, 102, 241, 0.3),
-          0 4px 10px rgba(0, 0, 0, 0.1);
+          0 15px 30px rgba(16, 185, 129, 0.3),
+          0 6px 15px rgba(0, 0, 0, 0.1);
   border-color: transparent;
 }
 
-.contactLink:active {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+.contactLink:hover::before {
+  opacity: 1;
 }
 
-/* Close Button - A GREAT Button */
+.contactLink:active {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+}
+
+.linkText {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: inherit;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.contactLink:hover .linkText {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Close Button */
 .closeBtn {
-  padding: 1.5rem;
+  padding: 1.75rem;
   background: transparent;
   color: #4b5563;
   border: none;
   border-radius: 0;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  font-size: 1.1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 1.15rem;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 .closeBtn::before {
@@ -276,15 +319,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #065f46, #10b981);
   transform: scaleY(0);
   transform-origin: bottom;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: -1;
 }
 
 .closeBtn:hover {
   color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
 .closeBtn:hover::before {
@@ -293,22 +337,35 @@
 
 /* Scrollbar Styling */
 .panelContent::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .panelContent::-webkit-scrollbar-track {
-  background: rgba(99, 102, 241, 0.05);
-  border-radius: 3px;
+  background: rgba(16, 185, 129, 0.08);
+  border-radius: 4px;
 }
 
 .panelContent::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  border-radius: 3px;
+  background: linear-gradient(135deg, #065f46, #10b981);
+  border-radius: 4px;
   transition: background 0.3s ease;
 }
 
 .panelContent::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, #064e3b, #0d9b6c);
+}
+
+/* Panel Decorative Elements */
+.helpPanel::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* ======================
@@ -318,94 +375,104 @@
 /* Tablet (768px and below) */
 @media (max-width: 768px) {
   .header {
-    padding: 0 1.5rem;
-    height: 70px;
+    padding: 0 1.75rem;
+    height: 75px;
   }
 
   .logoImg {
-    height: 38px;
+    height: 40px;
   }
 
   .projectNameTop {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   .projectNameBottom {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .helpPanel {
-    width: 400px;
+    width: 420px;
   }
 
   .panelContent {
-    padding: 2.5rem 2rem;
+    padding: 3rem 2rem;
   }
 
   .panelTitle {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
 
   .panelText {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    padding: 1.75rem;
+  }
+
+  .contactLinks {
+    gap: 1.5rem;
+  }
+
+  .contactLink {
+    width: 70px;
+    height: 70px;
     padding: 1.25rem;
   }
 
   .helpPanel::before {
-    right: 400px;
+    right: 420px;
   }
 }
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
   .header {
-    padding: 0 1.25rem;
+    padding: 0 1.5rem;
   }
 
   .logoText {
     display: none;
   }
 
+ @media (max-width: 480px) {
   .helpPanel {
     width: 100%;
-    border-left: none;
-    box-shadow: none;
-    /* Soften blur on mobile for performance */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    right: 0;
+    transform: translateX(100%); /* for closed state */
   }
 
   .helpPanel.open {
-    box-shadow: none;
+    transform: translateX(0); /* fully visible */
   }
+}
 
-  .panelContent {
-    padding: 2rem 1.5rem;
+ .panelContent {
+    padding: 2rem 1rem;
   }
-
   .panelTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
   }
 
   .panelText {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     margin-bottom: 2.5rem;
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   .contactLinks {
-    grid-template-columns: 1fr;
     gap: 1rem;
+    
   }
 
   .contactLink {
-    padding: 1rem 1.25rem;
+    width: 40px;
+    height: 40px;
+    padding: 1rem;
   }
 
   .closeBtn {
-    padding: 1.25rem;
-    font-size: 1rem;
+    padding: 1.5rem;
+    font-size: 1.1rem;
   }
 
   .helpPanel::before {
@@ -416,14 +483,19 @@
 /* Small Mobile (360px and below) */
 @media (max-width: 360px) {
   .panelContent {
-    padding: 1.5rem 1.25rem;
+    padding: 2rem 1.5rem;
   }
 
   .panelTitle {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 
   .panelText {
-    padding: 0.875rem;
+    padding: 1.25rem;
+  }
+
+  .contactLink {
+    width: 40px;
+    height: 40px;
   }
 }

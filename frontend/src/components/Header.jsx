@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, HelpCircle } from 'lucide-react';
+import { X, HelpCircle, Mail, Github, Linkedin } from 'lucide-react';
 import styles from './Header.module.css';
 import logo from '../images/logo-supnum2.png';
 
@@ -9,10 +9,6 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const burgerRef = useRef(null);
-
-    // For demonstration - replace with your auth state
-    const user = { name: "SidA7MD", initial: "S" };
-    // Set to null when logged out: const user = null;
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -50,8 +46,6 @@ const Header = () => {
                 </div>
             </div>
 
-
-
             {/* Help button */}
             <button
                 ref={burgerRef}
@@ -79,14 +73,33 @@ const Header = () => {
                     </p>
 
                     <div className={styles.contactLinks}>
-                        <a href="mailto:contact@example.com" className={styles.contactLink}>
-                            Email
+                        <a
+                            href="mailto:contact@example.com"
+                            className={styles.contactLink}
+                            aria-label="Email"
+                        >
+                            <Mail size={28} />
+                            <span className={styles.linkText}>Email</span>
                         </a>
-                        <a href="https://github.com/yourprofile" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
-                            GitHub
+                        <a
+                            href="https://github.com/yourprofile"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.contactLink}
+                            aria-label="GitHub"
+                        >
+                            <Github size={28} />
+                            <span className={styles.linkText}>GitHub</span>
                         </a>
-                        <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>
-                            LinkedIn
+                        <a
+                            href="https://linkedin.com/in/yourprofile"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.contactLink}
+                            aria-label="LinkedIn"
+                        >
+                            <Linkedin size={28} />
+                            <span className={styles.linkText}>LinkedIn</span>
                         </a>
                     </div>
                 </div>
@@ -94,8 +107,10 @@ const Header = () => {
                 <button
                     className={styles.closeBtn}
                     onClick={handleClose}
+                    aria-label="Fermer le panneau d'aide"
                 >
-                    Fermer
+                    <X size={20} />
+                    <span>Fermer</span>
                 </button>
             </div>
         </header>
