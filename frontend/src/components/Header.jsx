@@ -86,8 +86,9 @@ const Header = () => {
                 <div className={styles.panelContent}>
                     <h3 className={styles.panelTitle}>À propos</h3>
                     <p className={styles.panelText}>
-                        Salut ! Je suis développeur passionné par la création d'interfaces modernes,
-                        la performance web et les expériences utilisateurs fluides. Contacte-moi si tu veux collaborer !
+                      Cette application est une solution web moderne dédiée à l’organisation et à la consultation des documents universitaires. Elle permet aux étudiants d’accéder facilement aux cours, devoirs, examens et archives des années précédentes, le tout dans un environnement clair, structuré et accessible depuis n’importe quel appareil.
+
+Pensée pour la simplicité et l’efficacité, cette application centralise l’essentiel pour vous faire gagner du temps et rester concentré sur vos études.
                     </p>
 
                     <div className={styles.contactLinks}>

@@ -393,50 +393,6 @@ html, body {
 /* ======================
    Responsive Adjustments
    ====================== */
-
-/* Tablet (768px and below) */
-@media (max-width: 768px) and (min-width: 481px) {
-  .header {
-    padding: 0 1.75rem;
-    height: 75px;
-  }
-
-  .logoImg {
-    height: 40px;
-  }
-
-  .projectNameTop {
-    font-size: 1.15rem;
-  }
-
-  .projectNameBottom {
-    font-size: 0.9rem;
-  }
-
-  .panelContent {
-    padding: 3rem 2rem 0;
-  }
-
-  .panelTitle {
-    font-size: 2rem;
-  }
-
-  .panelText {
-    font-size: 1.1rem;
-    padding: 1.75rem;
-  }
-
-  .contactLinks {
-    gap: 1.5rem;
-  }
-
-  .contactLink {
-    width: 70px;
-    height: 70px;
-    padding: 1.25rem;
-  }
-}
-
 /* Mobile and Small Screens (480px and below) */
 @media (max-width: 480px) {
   .header {
@@ -464,6 +420,8 @@ html, body {
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(255, 255, 255, 0.7);
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+    /* Adjust padding-bottom of panelBottom to make space if needed for button margin */
+    /* If you add margin-bottom to closeBtn, you might need to increase panelContent padding-bottom */
   }
 
   .panelTitle {
@@ -491,6 +449,28 @@ html, body {
   .closeBtn {
     padding: 1.25rem;
     font-size: 1.1rem;
+    font-weight: 300;
+    width: 60%;
+    margin-left: 20%;
+    
+    margin-bottom: 3rem; 
+    color: black; 
+  
+    border: 0.5px solid gray; 
+    transform: none; 
+
+    
+    &:hover {
+        color: #ffffff; 
+        background: linear-gradient(135deg, #0d9b6c, #064e3b); 
+        transform: translateY(-2px); /* Gentle lift on hover */
+    }
+
+  
+    &::before {
+      transform: none; 
+      opacity: 0; 
+    }
   }
 
   .helpPanel::before {
@@ -500,14 +480,15 @@ html, body {
 
   /* Add padding to panel content to account for the fixed bottom section's height */
   .panelContent {
-    padding-bottom: 200px; /* Adjust this value if your .panelBottom height changes */
+    /* Adjusted padding-bottom to account for the new margin on closeBtn */
+    padding-bottom: 220px; /* Increased from 200px to account for 1rem margin + a bit more buffer */
   }
 }
 
 /* Small Mobile (360px and below) */
 @media (max-width: 360px) {
   .panelContent {
-    padding: 2rem 1.25rem 180px; /* Adjust padding-bottom for very small screens if needed */
+    padding: 2rem 1.25rem 200px; /* Adjusted padding-bottom for very small screens, increased */
   }
 
   .panelTitle {
@@ -530,5 +511,6 @@ html, body {
   .closeBtn {
     padding: 1rem;
     font-size: 1rem;
+    margin-bottom: 3rem; /* Slightly less margin for smaller screens */
   }
 }
