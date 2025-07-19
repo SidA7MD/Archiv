@@ -120,8 +120,7 @@ Pensée pour la simplicité et l’efficacité, cette application centralise l�
                             <Linkedin size={28} />
                             <span className={styles.linkText}>LinkedIn</span>
                         </a>
-                    </div>
-                </div>
+                         </div>
 
                 <button
                     className={styles.closeBtn}
@@ -132,6 +131,8 @@ Pensée pour la simplicité et l’efficacité, cette application centralise l�
                     <span>Fermer</span>
                 </button>
             </div>
+                    </div>
+               
         </header>
     );
 };

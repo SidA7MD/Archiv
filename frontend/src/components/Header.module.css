@@ -325,6 +325,7 @@ html, body {
   font-size: 1.15rem;
   position: relative;
   z-index: 1;
+  margin-top: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -452,8 +453,8 @@ html, body {
     font-weight: 300;
     width: 60%;
     margin-left: 20%;
-    
-    margin-bottom: 3rem; 
+    margin-top: 100px;
+    /* margin-bottom: 1rem;  */
     color: black; 
   
     border: 0.5px solid gray; 
@@ -511,6 +512,7 @@ html, body {
   .closeBtn {
     padding: 1rem;
     font-size: 1rem;
-    margin-bottom: 3rem; /* Slightly less margin for smaller screens */
+        margin-top: 100px;
+
   }
 }
