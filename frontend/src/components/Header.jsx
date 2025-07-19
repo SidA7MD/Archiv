@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, HelpCircle, Mail, Github } from 'lucide-react';
+import logo from '../images/logo-supnum2.png';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -300,7 +301,7 @@ const Header = () => {
                     onMouseLeave={(e) => handleLogoHover(e, false)}
                 >
                     <img 
-                        src="./src/images/logo-supnum2.png" 
+                        src={logo} 
                         alt="Archiv Logo" 
                         style={logoImgStyle}
                     />
