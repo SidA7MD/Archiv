@@ -1,258 +1,429 @@
-/* 
-  Modern Header Styling
-  - Simplified design
-  - Mobile-friendly
-  - Smooth animations
-*/
+/* =============================
+   Premium Header Styles
+   ============================= */
 
-/* Header Container */
+/* Base Header Styles */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1.75rem;
-  background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
-
-
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  padding: 0 2rem;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: 70px;
+  height: 80px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Logo styling */
+/* Logo Container */
 .logoContainer {
   display: flex;
   align-items: center;
-}
-
-.logoImg {
-  height: auto;
-  max-height: 55px;
-  max-width: 140px;
-  padding: 4px 0;
+  gap: 1rem;
+  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
-.logoImg:hover {
-  transform: scale(1.03);
+.logoContainer:hover {
+  transform: translateX(-2px);
 }
 
-/* User profile section */
-.profileSection {
+.logoImg {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.logoText {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  line-height: 1.1;
 }
 
-.userInfo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 6px 16px 6px 6px;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.projectNameTop {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.5px;
 }
 
-.userInfo:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
-.avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #3b82f6, #2563eb);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
-
-.username {
-  font-weight: 500;
+.projectNameBottom {
   font-size: 0.95rem;
-  color: #1f2937;
+  font-weight: 500;
+  color: #4b5563;
+  letter-spacing: 0.5px;
 }
 
-/* Auth buttons */
-.authButtons {
-  display: flex;
-  gap: 12px;
-}
-
-.loginBtn, .signupBtn {
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-.loginBtn {
-  background: #f9fafb;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
-}
-
-.loginBtn:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-}
-
-.signupBtn {
-  background: #3b82f6;
-  color: white;
-}
-
-.signupBtn:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-}
-
-/* Mobile burger button */
-.burgerBtn {
-  display: none;
+/* Help Button */
+.helpBtn {
   background: none;
   border: none;
-  color: #4b5563;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.burgerBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+.helpBtn:hover {
+  background: rgba(99, 102, 241, 0.1);
 }
 
-/* Mobile menu */
-.mobileMenu {
+.icon {
+  color: #4b5563;
+  transition: all 0.3s ease;
+}
+
+.helpBtn:hover .icon {
+  color: #6366f1;
+  transform: scale(1.1);
+}
+
+/* =================================
+   Revolutionary Help Panel Design
+   ================================= */
+
+/* Help Panel - Glassmorphism Effect */
+.helpPanel {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
-  width: 85%;
-  max-width: 320px;
-  background: white;
-  box-shadow: -4px 0 25px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  max-width: 100%;
+  /* REVOLUTIONARY new background */
+  background: rgba(249, 250, 251, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
   z-index: 1100;
   transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow-y: auto;
-  padding-top: 30px;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.mobileMenu.open {
+.helpPanel::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.helpPanel.open {
   transform: translateX(0);
+  box-shadow:
+          -20px 0 60px rgba(0, 0, 0, 0.2),
+          0 0 30px rgba(99, 102, 241, 0.1);
 }
 
-.mobileHeader {
-  padding: 1.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.helpPanel.open::before {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.mobileUserSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #f3f4f6;
+/* Panel Content */
+.panelContent {
+  flex: 1;
+  padding: 3rem 2.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
-.mobileAvatar {
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, #3b82f6, #2563eb);
-  color: white;
+.panelContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2.5rem;
+  right: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg,
+  transparent 0%,
+  rgba(99, 102, 241, 0.2) 50%,
+  transparent 100%
+  );
+}
+
+.panelTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1f2937 0%, #4b5563 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.panelTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 6px;
+  background: linear-gradient(90deg,
+  #6366f1 0%,
+  #8b5cf6 50%,
+  #ec4899 100%
+  );
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.panelText {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #374151; /* Darker text for better readability */
+  margin-bottom: 3rem;
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Contact Links - GREAT Buttons */
+.contactLinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.contactLink {
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 2rem;
+  gap: 0.75rem;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.mobileUsername {
-  font-weight: 600;
-  font-size: 1.2rem;
-  color: #1f2937;
+.contactLink:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow:
+          0 10px 25px rgba(99, 102, 241, 0.3),
+          0 4px 10px rgba(0, 0, 0, 0.1);
+  border-color: transparent;
 }
 
-.logoutBtn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  background: #fee2e2;
-  color: #dc2626;
+.contactLink:active {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+}
+
+/* Close Button - A GREAT Button */
+.closeBtn {
+  padding: 1.5rem;
+  background: transparent;
+  color: #4b5563;
   border: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.logoutBtn:hover {
-  background: #fecaca;
-}
-
-.mobileAuthButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.mobileLoginBtn, .mobileSignupBtn {
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 0;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  width: 100%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
 }
 
-.mobileLoginBtn {
-  background: #f9fafb;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
+.closeBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
 }
 
-.mobileSignupBtn {
-  background: #3b82f6;
-  color: white;
+.closeBtn:hover {
+  color: #ffffff;
 }
 
-/* Media queries for responsive design */
+.closeBtn:hover::before {
+  transform: scaleY(1);
+}
+
+/* Scrollbar Styling */
+.panelContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panelContent::-webkit-scrollbar-track {
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: 3px;
+}
+
+.panelContent::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.panelContent::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* ======================
+   Responsive Adjustments
+   ====================== */
+
+/* Tablet (768px and below) */
 @media (max-width: 768px) {
   .header {
-    padding: 0.5rem 1.2rem;
-  }
-  
-  .profileSection {
-    display: none;
-  }
-  
-  .burgerBtn {
-    display: flex;
+    padding: 0 1.5rem;
+    height: 70px;
   }
 
   .logoImg {
-    max-height: 50px;
+    height: 38px;
+  }
+
+  .projectNameTop {
+    font-size: 1.1rem;
+  }
+
+  .projectNameBottom {
+    font-size: 0.85rem;
+  }
+
+  .helpPanel {
+    width: 400px;
+  }
+
+  .panelContent {
+    padding: 2.5rem 2rem;
+  }
+
+  .panelTitle {
+    font-size: 1.75rem;
+  }
+
+  .panelText {
+    font-size: 1rem;
+    padding: 1.25rem;
+  }
+
+  .helpPanel::before {
+    right: 400px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  .header {
+    padding: 0 1.25rem;
+  }
+
+  .logoText {
+    display: none;
+  }
+
+  .helpPanel {
+    width: 100%;
+    border-left: none;
+    box-shadow: none;
+    /* Soften blur on mobile for performance */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .helpPanel.open {
+    box-shadow: none;
+  }
+
+  .panelContent {
+    padding: 2rem 1.5rem;
+  }
+
+  .panelTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panelText {
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+  }
+
+  .contactLinks {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .contactLink {
+    padding: 1rem 1.25rem;
+  }
+
+  .closeBtn {
+    padding: 1.25rem;
+    font-size: 1rem;
+  }
+
+  .helpPanel::before {
+    right: 0;
+  }
+}
+
+/* Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .panelContent {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .panelTitle {
+    font-size: 1.4rem;
+  }
+
+  .panelText {
+    padding: 0.875rem;
   }
 }
