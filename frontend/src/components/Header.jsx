@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, HelpCircle, Mail, Github, Linkedin } from 'lucide-react';
+import { X, HelpCircle, Mail, Github } from 'lucide-react';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -347,7 +347,7 @@ const Header = () => {
                             onMouseLeave={(e) => handleContactLinkHover(e, false)}
                             aria-label="Email"
                         >
-                            <Mail size={clamp(20, 4, 24)} />
+                            <Mail size={20} />
                         </a>
                         <a
                             href="https://github.com/SidA7MD"
@@ -358,7 +358,7 @@ const Header = () => {
                             onMouseLeave={(e) => handleContactLinkHover(e, false)}
                             aria-label="GitHub"
                         >
-                            <Github size={clamp(20, 4, 24)} />
+                            <Github size={20} />
                         </a>
                     </div>
 
@@ -377,10 +377,5 @@ const Header = () => {
         </>
     );
 };
-
-// Helper function for clamp values
-function clamp(min, vw, max) {
-    return Math.min(max, Math.max(min, (vw * window.innerWidth) / 100));
-}
 
 export default Header;
