@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, HelpCircle, Mail, Github, Linkedin } from 'lucide-react';
-import styles from './Header.module.css';
-import logo from '../images/logo-supnum2.png';
+import styles from './Header.module.css'; // Make sure this path is correct
+import logo from '../images/logo-supnum2.png'; // Make sure this path is correct
 
 const Header = () => {
     const navigate = useNavigate();
@@ -10,6 +10,7 @@ const Header = () => {
     const menuRef = useRef(null);
     const burgerRef = useRef(null);
 
+    // Effect for handling click outside the panel or burger button
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (
@@ -26,6 +27,23 @@ const Header = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [menuOpen]);
+
+    // Effect for managing body scroll when the panel is open
+    useEffect(() => {
+        if (menuOpen) {
+            // Add the generated CSS Module class to the body
+            document.body.classList.add(styles.helpPanelOpen);
+        } else {
+            // Remove the class
+            document.body.classList.remove(styles.helpPanelOpen);
+        }
+
+        // Cleanup function: important to ensure the class is removed
+        // when the component unmounts or before the effect re-runs
+        return () => {
+            document.body.classList.remove(styles.helpPanelOpen);
+        };
+    }, [menuOpen]); // This effect runs whenever menuOpen state changes
 
     const handleClose = () => {
         setMenuOpen(false);
