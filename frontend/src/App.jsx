@@ -18,8 +18,8 @@ import S1TD from './Pages/S1TD';
 import S1TP from './Pages/S1TP';
 import S1Rattrapages from './Pages/S1Rattrapages';
 
-// Course details page (dynamic)
-import CourseDetails from './Pages/CourseDetails';
+// Fixed and working S1Algebre component
+import S1Algebre from './Pages/S1Algebre';
 
 function App() {
     return (
@@ -35,7 +35,11 @@ function App() {
                 {/* Semester 1 routes */}
                 <Route path="/s1" element={<S1 />} />
                 <Route path="/cours" element={<S1cours />} />
-                <Route path="/cours/:coursId" element={<CourseDetails />} /> {/* NEW */}
+                
+                {/* Fixed algebra route */}
+                <Route path="/cours/algebre" element={<S1Algebre />} />
+                
+                {/* Other S1 routes */}
                 <Route path="/devoirs" element={<S1devoirs />} />
                 <Route path="/compositions" element={<S1Compositions />} />
                 <Route path="/td" element={<S1TD />} />
@@ -47,3 +51,4 @@ function App() {
 }
 
 export default App;
+
