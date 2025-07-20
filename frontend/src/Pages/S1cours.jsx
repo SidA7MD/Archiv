@@ -23,8 +23,6 @@ const premiumGradients = [
 ];
 
 const iconMap = {
-  Français: <FaLanguage />,
-  Anglais: <FaLanguage />,
   "Programmation C++": <FaLaptopCode />,
   "Base de données": <FaDatabase />,
   "Concepts de base Réseau": <FaNetworkWired />,
@@ -299,8 +297,6 @@ function Section({ title, courses, icon }) {
 
 export default function CoursS1() {
   const mainCourses = [
-    { name: "Français", icon: <FaLanguage /> },
-    { name: "Anglais", icon: <FaLanguage /> },
     { name: "Algèbre", icon: <FaCalculator /> },
     { name: "Analyse", icon: <FaChartLine /> },
     { name: "Programmation C++", icon: <FaLaptopCode /> },
