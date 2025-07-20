@@ -7,11 +7,18 @@ export default function S1Algebre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API configuration with better environment handling
-  const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const API_BASE_URL = isDevelopment 
-    ? 'http://localhost:5000'
-    : '';
+  // Updated API configuration for Vite + Vercel
+  const getApiBaseUrl = () => {
+    // Check if we're in development mode
+    if (import.meta.env.DEV) {
+      return "http://localhost:5000";
+    }
+    
+    // In production, use environment variable or fallback to your Render backend
+    return import.meta.env.VITE_API_URL || "https://archiv.onrender.com";
+  };
+
+  const API_BASE_URL = getApiBaseUrl();
 
   // Fetch available PDFs from server
   useEffect(() => {
@@ -23,10 +30,14 @@ export default function S1Algebre() {
       setLoading(true);
       setError(null);
       
+      console.log("🌐 Fetching PDFs from:", `${API_BASE_URL}/api/pdf/list`);
+      
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // Increased timeout for production
       
       const response = await fetch(`${API_BASE_URL}/api/pdf/list`, {
+        method: 'GET',
+        mode: 'cors', // Explicitly set CORS mode
         signal: controller.signal,
         headers: {
           'Accept': 'application/json',
@@ -47,18 +58,20 @@ export default function S1Algebre() {
         if (data.pdfs.length > 0) {
           setSelectedPdf(data.pdfs[0].filename);
         }
+        console.log(`✅ Loaded ${data.pdfs.length} PDF files`);
       } else {
         throw new Error('Format de réponse invalide du serveur');
       }
     } catch (err) {
       if (err.name === 'AbortError') {
         setError('Délai d\'attente dépassé. Vérifiez votre connexion.');
-      } else if (err.message.includes('fetch')) {
-        setError('Impossible de se connecter au serveur. Vérifiez que le serveur est démarré.');
+      } else if (err.message.includes('fetch') || err.message.includes('NetworkError')) {
+        setError(`Impossible de se connecter au serveur (${API_BASE_URL}). Vérifiez que le serveur est démarré.`);
       } else {
         setError(`Erreur: ${err.message}`);
       }
-      console.error('Error fetching PDFs:', err);
+      console.error('❌ Error fetching PDFs:', err);
+      console.error('🔗 API URL used:', `${API_BASE_URL}/api/pdf/list`);
     } finally {
       setLoading(false);
     }
@@ -74,7 +87,9 @@ export default function S1Algebre() {
     
     try {
       const url = getPdfUrl(filename);
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        mode: 'cors'
+      });
       
       if (!response.ok) {
         throw new Error('Impossible de télécharger le fichier');
@@ -269,6 +284,11 @@ export default function S1Algebre() {
         <div style={styles.loadingContainer}>
           <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🔄</div>
           <div style={{ fontSize: '1.2rem', color: '#64748b' }}>Chargement des cours...</div>
+          {import.meta.env.DEV && (
+            <div style={{ marginTop: '10px', fontSize: '0.8rem', color: '#94a3b8' }}>
+              API: {API_BASE_URL}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -286,6 +306,14 @@ export default function S1Algebre() {
           >
             🔄 Réessayer
           </button>
+          {import.meta.env.DEV && (
+            <div style={{ marginTop: '15px', fontSize: '0.9rem', color: '#64748b' }}>
+              <strong>Debug Info:</strong><br/>
+              API URL: {API_BASE_URL}<br/>
+              Environment: {import.meta.env.MODE}<br/>
+              Dev Mode: {import.meta.env.DEV ? 'Yes' : 'No'}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -410,13 +438,14 @@ export default function S1Algebre() {
           </div>
         )}
 
-        {isDevelopment && (
+        {import.meta.env.DEV && (
           <div style={styles.debugInfo}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div>
-                <strong>🌐 Serveur:</strong> {API_BASE_URL || 'same origin'} • 
+                <strong>🌐 Serveur:</strong> {API_BASE_URL} • 
                 <strong> PDFs trouvés:</strong> {pdfFiles.length} • 
-                <strong> Sélectionné:</strong> {selectedPdf || 'Aucun'}
+                <strong> Sélectionné:</strong> {selectedPdf || 'Aucun'} •
+                <strong> Mode:</strong> {import.meta.env.MODE}
               </div>
             </div>
           </div>
