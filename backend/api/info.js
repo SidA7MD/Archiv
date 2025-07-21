@@ -1,6 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-
 export default function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -17,29 +14,12 @@ export default function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  try {
-    const pdfDir = path.join(process.cwd(), 'public', 'pdfs');
-    let pdfCount = 0;
-    
-    if (fs.existsSync(pdfDir)) {
-      pdfCount = fs.readdirSync(pdfDir).filter(f => f.toLowerCase().endsWith('.pdf')).length;
-    }
-    
-    res.json({
-      success: true,
-      server: 'Archiv Backend',
-      version: '1.0.0',
-      environment: process.env.VERCEL_ENV || 'development',
-      pdfCount,
-      timestamp: new Date().toISOString(),
-      platform: 'Vercel Serverless'
-    });
-  } catch (error) {
-    console.error('Error in info endpoint:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
-    });
-  }
+  res.json({ 
+    success: true, 
+    message: 'Archiv Backend Server is running on Vercel!',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0',
+    environment: process.env.VERCEL_ENV || 'development',
+    platform: 'Vercel Serverless'
+  });
 }

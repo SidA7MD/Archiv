@@ -16,8 +16,5 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "keywords": ["vercel", "serverless", "pdf", "archiv", "backend"],
-  "author": "Your Name",
-  "license": "MIT"
+  }
 }

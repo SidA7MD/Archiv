@@ -8,17 +8,16 @@ export default function S1Algebre() {
   const [error, setError] = useState(null);
 
   // Updated API configuration for Vercel deployment
-  const getApiBaseUrl = () => {
-    // Check if we're in development mode
-    if (import.meta.env.DEV) {
-      // For local development with Vercel CLI
-      return "http://localhost:3000";
-    }
-    
-    // In production, use your Vercel deployment URL
-    // Replace 'your-project-name' with your actual Vercel project name
-    return import.meta.env.VITE_API_URL || "https://your-project-name.vercel.app";
-  };
+const getApiBaseUrl = () => {
+  // Check if we're in development mode
+  if (import.meta.env.DEV) {
+    // For local development
+    return import.meta.env.VITE_API_URL || "http://localhost:5000";
+  }
+  
+  // In production, use your Vercel deployment URL
+  return import.meta.env.VITE_PROD_API_URL || "https://your-backend-name.vercel.app";
+};
 
   const API_BASE_URL = getApiBaseUrl();
 

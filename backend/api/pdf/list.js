@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 
@@ -25,9 +24,8 @@ export default function handler(req, res) {
     
     // Check if pdfs directory exists
     if (!fs.existsSync(pdfDir)) {
-      console.log('📁 PDFs directory does not exist, creating it...');
-      fs.mkdirSync(pdfDir, { recursive: true });
-      return res.json({ success: true, pdfs: [], message: 'PDF directory created but empty' });
+      console.log('📁 PDFs directory does not exist');
+      return res.json({ success: true, pdfs: [], message: 'PDF directory not found' });
     }
 
     const files = fs.readdirSync(pdfDir);
