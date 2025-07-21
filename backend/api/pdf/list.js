@@ -11,7 +11,15 @@ export default function handler(req, res) {
       title: "Chapitre II - Espaces vectoriels",
       size: 310000,
       lastModified: new Date().toISOString()
+    },
+
+    {
+      filename: "CH 3 Cours algèbre SupNum.pdf",
+      title: "Chapitre II - Espaces vectoriels",
+      size: 310000,
+      lastModified: new Date().toISOString()
     }
+    
   ];
 
   res.status(200).json({
