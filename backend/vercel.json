@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "functions": {
     "api/**/*.js": {
       "maxDuration": 10
@@ -8,10 +9,16 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
         { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    },
+    {
+      "source": "/pdfs/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Content-Type", "value": "application/pdf" }
       ]
     }
   ],
@@ -20,5 +27,6 @@
       "source": "/pdfs/(.*)",
       "destination": "/api/pdf/$1"
     }
-  ]
+  ],
+  "public": true
 }
