@@ -12,7 +12,7 @@ export default function S1Algebre() {
     // Check if we're in development mode
     if (import.meta.env.DEV) {
       // For local development
-      return import.meta.env.VITE_API_URL || "http://localhost:5000";
+      return import.meta.env.VITE_API_URL || "http://localhost:3000";
     }
     
     // In production, use your separate backend URL

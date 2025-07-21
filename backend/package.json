@@ -4,7 +4,6 @@
   "description": "Vercel serverless backend for Archiv PDF management system",
   "type": "module",
   "scripts": {
-    "dev": "vercel dev",
     "build": "echo 'No build step required for serverless functions'",
     "deploy": "vercel --prod"
   },
