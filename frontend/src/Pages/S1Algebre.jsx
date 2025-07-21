@@ -33,7 +33,7 @@ export default function S1Algebre() {
       setLoading(true);
       setError(null);
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout
       const response = await fetch(`${API_BASE_URL}/api/pdf/list`, {
         method: "GET",
         mode: "cors",
@@ -43,22 +43,36 @@ export default function S1Algebre() {
           "Content-Type": "application/json",
         },
       });
-      clearTimeout(timeoutId);
-      if (!response.ok) throw new Error("Failed to load PDF list");
+      clearTimeout(timeoutId); // Clear timeout if fetch completes in time
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.success && Array.isArray(data.pdfs)) {
         setPdfFiles(data.pdfs);
-        if (data.pdfs.length > 0) setSelectedPdf(data.pdfs[0].filename);
+        if (data.pdfs.length > 0 && !selectedPdf) {
+          // Set initial selected PDF only if none is selected
+          setSelectedPdf(data.pdfs[0].filename);
+        } else if (data.pdfs.length === 0) {
+          setSelectedPdf(""); // Clear if no PDFs
+        }
       } else {
         setPdfFiles([]);
         setSelectedPdf("");
+        setError("Invalid data format received from server.");
       }
     } catch (err) {
-      setError("Could not load PDFs. " + err.message);
+      if (err.name === "AbortError") {
+        setError("Request timed out. Please try again.");
+      } else {
+        setError(`Could not load PDFs: ${err.message}`);
+      }
     } finally {
       setLoading(false);
     }
-  }, [API_BASE_URL]);
+  }, [API_BASE_URL, selectedPdf]); // Added selectedPdf to dependencies
 
   useEffect(() => {
     fetchPdfList();
@@ -68,17 +82,24 @@ export default function S1Algebre() {
     filename ? `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}` : "";
 
   const downloadPdf = async (filename) => {
-    if (!filename) return alert("No PDF selected");
+    if (!filename) {
+      return alert("No PDF selected for download.");
+    }
     try {
       const response = await fetch(getPdfUrl(filename), {
         method: "GET",
         headers: { Accept: "application/pdf" },
       });
+
+      if (!response.ok) {
+        throw new Error(`Failed to download PDF: ${response.statusText}`);
+      }
+
       const blob = await response.blob();
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = filename;
+      link.download = filename; // Use original filename for download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -91,7 +112,7 @@ export default function S1Algebre() {
   const getChapterName = (filename) => {
     if (!filename) return "Chapter";
     const lower = filename.toLowerCase();
-    const match = lower.match(/ch\s?([ivx\d]+)/);
+    const match = lower.match(/ch\s?([ivx\d]+)/); // Matches "ch1", "ch 1", "chV", etc.
     if (match && match[1]) {
       const romanNumerals = {
         "1": "I",
@@ -99,56 +120,143 @@ export default function S1Algebre() {
         "3": "III",
         "4": "IV",
         "5": "V",
+        "6": "VI",
+        "7": "VII",
+        "8": "VIII",
+        "9": "IX",
+        "10": "X",
       };
+      // Convert single digits to Roman numerals if they exist in the map, otherwise use as is
       return `Chapter ${romanNumerals[match[1]] || match[1].toUpperCase()}`;
     }
     return lower.includes("course") ? "Course" : "Chapter";
   };
 
-  const getButtonStyle = (color) => ({
+  // Base styles for all buttons
+  const baseButtonStyles = {
     padding: "12px 24px",
-    borderRadius: "16px",
+    borderRadius: "12px",
     fontWeight: 600,
     fontSize: "0.95rem",
     cursor: "pointer",
     border: "none",
-    background: color,
     color: "#fff",
-    transition: "transform 0.2s ease-in-out",
-    boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+    transition: "all 0.3s ease-in-out",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
     display: "flex",
     alignItems: "center",
     gap: "8px",
+    justifyContent: "center", // Center content within button
+  };
+
+  const primaryButtonColors = {
+    active: "#8a2be2", // Amethyst / Purple
+    inactive: "#6a5acd", // Slate Blue
+  };
+
+  const actionButtonColors = {
+    download: "#ff6b6b", // Red-Orange
+    open: "#4ecdc4", // Turquoise
+    refresh: "#1abc9c", // Emerald
+  };
+
+  // Merges base styles with specific background color
+  const getButtonStyles = (bgColor, isActive = false) => ({
+    ...baseButtonStyles,
+    background: bgColor,
+    ...(isActive && {
+      boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
+      transform: "translateY(-2px)",
+    }),
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 6px 20px rgba(0,0,0,0.2)",
+    },
+    "&:active": {
+      transform: "translateY(0)",
+      boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+    },
+    "&:disabled": {
+      opacity: 0.6,
+      cursor: "not-allowed",
+      boxShadow: "none",
+      transform: "none",
+    },
   });
 
   const containerStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
     minHeight: "100vh",
+    background: "#f0f2f5", // Light gray background
+    padding: "20px",
+    fontFamily: "'Inter', sans-serif",
+    boxSizing: "border-box", // Ensure padding is included in width
+  };
+
+  const contentAreaStyle = {
+    width: "100%",
+    maxWidth: "1200px", // Max width for the content
+    display: "flex",
+    flexDirection: "column",
+    gap: "25px",
+    padding: "25px",
     background: "#ffffff",
-    padding: "40px 20px",
-    fontFamily: "Inter, sans-serif",
+    borderRadius: "15px",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+  };
+
+  const messageStyle = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: "calc(100vh - 40px)", // Adjust for padding
+    color: "#555",
+    fontSize: "1.2rem",
+    textAlign: "center",
+    gap: "15px",
   };
 
   if (loading)
     return (
-      <div style={containerStyle}>
-        <MdAccessTime size={48} />
-        <p>Loading...</p>
+      <div style={messageStyle}>
+        <MdAccessTime size={50} color="#6a5acd" />
+        <p>Loading available documents...</p>
       </div>
     );
 
   if (error)
     return (
-      <div style={containerStyle}>
-        <MdErrorOutline size={48} />
+      <div style={messageStyle}>
+        <MdErrorOutline size={50} color="#ff6b6b" />
         <p>{error}</p>
+        <motion.button
+          onClick={fetchPdfList}
+          style={getButtonStyles(actionButtonColors.refresh)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <MdRefresh /> Try Again
+        </motion.button>
       </div>
     );
 
   if (pdfFiles.length === 0)
     return (
-      <div style={containerStyle}>
-        <MdFolderOpen size={48} />
-        <p>No content found</p>
+      <div style={messageStyle}>
+        <MdFolderOpen size={50} color="#4ecdc4" />
+        <p>No documents found at the moment.</p>
+        <motion.button
+          onClick={fetchPdfList}
+          style={getButtonStyles(actionButtonColors.refresh)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <MdRefresh /> Refresh List
+        </motion.button>
       </div>
     );
 
@@ -156,101 +264,136 @@ export default function S1Algebre() {
 
   return (
     <div style={containerStyle}>
-      {/* Tabs */}
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          flexWrap: "wrap",
-          marginBottom: "24px",
-        }}
-      >
-        {pdfFiles.map((pdf) => (
-          <motion.button
-            key={pdf.filename}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            style={getButtonStyle(
-              selectedPdf === pdf.filename ? "#e94057" : "#7b2ff7"
-            )}
-            onClick={() => setSelectedPdf(pdf.filename)}
-          >
-            <MdDescription /> {getChapterName(pdf.filename)}
-          </motion.button>
-        ))}
-      </div>
-
-      {/* Content Card */}
-      <div
-        style={{
-          background: "#f9f9f9",
-          borderRadius: "20px",
-          padding: "24px",
-          boxShadow: "0 10px 40px rgba(0,0,0,0.05)",
-        }}
-      >
-        <h3 style={{ marginBottom: "12px", display: "flex", gap: "8px" }}>
-          <MdOutlineLibraryBooks size={24} />
-          {currentPdf?.title || "Select a Chapter"}
-        </h3>
-
-        {/* Controls */}
+      <div style={contentAreaStyle}>
+        {/* PDF Selection Buttons */}
         <div
           style={{
             display: "flex",
-            gap: "12px",
             flexWrap: "wrap",
-            marginBottom: "24px",
+            gap: "12px",
+            marginBottom: "20px",
+            justifyContent: isMobile ? "center" : "flex-start", // Center buttons on mobile
           }}
         >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => downloadPdf(selectedPdf)}
-            disabled={!selectedPdf}
-            style={getButtonStyle("#ff9f43")}
-          >
-            <MdFileDownload /> Download
-          </motion.button>
-
-          <motion.a
-            href={getPdfUrl(selectedPdf)}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            style={getButtonStyle("#00d2d3")}
-          >
-            <MdLink /> Open in New Tab
-          </motion.a>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={fetchPdfList}
-            style={getButtonStyle("#5f27cd")}
-          >
-            <MdRefresh /> Refresh
-          </motion.button>
+          {pdfFiles.map((pdf) => (
+            <motion.button
+              key={pdf.filename}
+              whileHover={{ scale: 1.05, boxShadow: "0 6px 20px rgba(0,0,0,0.2)" }}
+              whileTap={{ scale: 0.98, boxShadow: "0 2px 10px rgba(0,0,0,0.15)" }}
+              onClick={() => setSelectedPdf(pdf.filename)}
+              style={getButtonStyles(
+                selectedPdf === pdf.filename
+                  ? primaryButtonColors.active
+                  : primaryButtonColors.inactive,
+                selectedPdf === pdf.filename
+              )}
+            >
+              <MdDescription /> {getChapterName(pdf.filename)}
+            </motion.button>
+          ))}
         </div>
 
-        {/* PDF Viewer */}
-        {selectedPdf && (
-          <div
+        {/* Selected PDF Actions */}
+        <div
+          style={{
+            background: "#f8f9fa", // Lighter background for action panel
+            borderRadius: "12px",
+            padding: "20px",
+            boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+          }}
+        >
+          <h3
             style={{
-              border: "1px solid #ccc",
-              borderRadius: "12px",
-              overflow: "hidden",
-              height: "600px",
+              marginBottom: "10px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              color: "#333",
+              fontSize: "1.4rem",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "10px",
             }}
           >
-            <iframe
-              src={getPdfUrl(selectedPdf)}
-              title={currentPdf?.title}
-              style={{ width: "100%", height: "100%", border: "none" }}
-            />
+            <MdOutlineLibraryBooks size={28} color="#8a2be2" />
+            {currentPdf?.title || "No Document Selected"}
+          </h3>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "15px",
+              justifyContent: isMobile ? "center" : "flex-start", // Center actions on mobile
+            }}
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => downloadPdf(selectedPdf)}
+              disabled={!selectedPdf}
+              style={getButtonStyles(actionButtonColors.download)}
+            >
+              <MdFileDownload /> Download
+            </motion.button>
+
+            <motion.a
+              href={getPdfUrl(selectedPdf)}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={getButtonStyles(actionButtonColors.open)}
+            >
+              <MdLink /> Open in Tab
+            </motion.a>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={fetchPdfList}
+              style={getButtonStyles(actionButtonColors.refresh)}
+            >
+              <MdRefresh /> Refresh List
+            </motion.button>
           </div>
-        )}
+
+          {/* PDF Viewer - hidden on mobile */}
+          {!isMobile && selectedPdf && (
+            <div
+              style={{
+                border: "1px solid #e0e0e0",
+                borderRadius: "10px",
+                overflow: "hidden",
+                height: "650px", // Slightly increased height for better viewing
+                marginTop: "20px",
+                boxShadow: "inset 0 2px 8px rgba(0,0,0,0.05)",
+              }}
+            >
+              <iframe
+                src={getPdfUrl(selectedPdf)}
+                title={currentPdf?.title || "PDF Viewer"}
+                style={{ width: "100%", height: "100%", border: "none" }}
+                loading="lazy" // Add lazy loading for iframes
+              />
+            </div>
+          )}
+
+          {isMobile && selectedPdf && (
+            <p
+              style={{
+                textAlign: "center",
+                color: "#666",
+                marginTop: "15px",
+                fontSize: "0.9rem",
+              }}
+            >
+              On mobile, PDFs are best viewed by opening them in a new tab.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
