@@ -15,8 +15,8 @@ const getApiBaseUrl = () => {
     return import.meta.env.VITE_API_URL || "http://localhost:5000";
   }
   
-  // In production, use relative URLs (same domain)
-  return "";  // Empty string = same domain
+  // In production, use your separate backend URL
+  return import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
 };
   const API_BASE_URL = getApiBaseUrl();
 
