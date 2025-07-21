@@ -1,25 +1,23 @@
 {
-  "name": "archiv-backend",
+  "name": "archiv-backend-vercel",
   "version": "1.0.0",
-  "description": "Backend server for Archiv PDF management system",
-  "main": "./src/server.mjs",
+  "description": "Vercel serverless backend for Archiv PDF management system",
   "type": "module",
   "scripts": {
-    "start": "node ./src/server.mjs",
-    "start:dev": "nodemon ./src/server.mjs",
-    "dev": "nodemon ./src/server.mjs"
+    "dev": "vercel dev",
+    "build": "echo 'No build step required for serverless functions'",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "cors": "^2.8.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "vercel": "^32.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["express", "pdf", "archiv", "backend"],
+  "keywords": ["vercel", "serverless", "pdf", "archiv", "backend"],
   "author": "Your Name",
   "license": "MIT"
 }

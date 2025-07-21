@@ -7,15 +7,17 @@ export default function S1Algebre() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Updated API configuration for Vite + Vercel
+  // Updated API configuration for Vercel deployment
   const getApiBaseUrl = () => {
     // Check if we're in development mode
     if (import.meta.env.DEV) {
-      return "http://localhost:5000";
+      // For local development with Vercel CLI
+      return "http://localhost:3000";
     }
     
-    // In production, use environment variable or fallback to your Render backend
-    return import.meta.env.VITE_API_URL || "https://archiv.onrender.com";
+    // In production, use your Vercel deployment URL
+    // Replace 'your-project-name' with your actual Vercel project name
+    return import.meta.env.VITE_API_URL || "https://your-project-name.vercel.app";
   };
 
   const API_BASE_URL = getApiBaseUrl();
@@ -33,11 +35,11 @@ export default function S1Algebre() {
       console.log("🌐 Fetching PDFs from:", `${API_BASE_URL}/api/pdf/list`);
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // Increased timeout for production
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
       
       const response = await fetch(`${API_BASE_URL}/api/pdf/list`, {
         method: 'GET',
-        mode: 'cors', // Explicitly set CORS mode
+        mode: 'cors',
         signal: controller.signal,
         headers: {
           'Accept': 'application/json',
@@ -77,8 +79,10 @@ export default function S1Algebre() {
     }
   };
 
+  // Updated to work with Vercel's rewrite rules
   const getPdfUrl = (filename) => {
     if (!filename) return '';
+    // This will use the rewrite rule in vercel.json to redirect to /api/pdf/[filename]
     return `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}`;
   };
 
@@ -87,12 +91,18 @@ export default function S1Algebre() {
     
     try {
       const url = getPdfUrl(filename);
+      console.log('📥 Downloading PDF from:', url);
+      
       const response = await fetch(url, {
-        mode: 'cors'
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/pdf',
+        }
       });
       
       if (!response.ok) {
-        throw new Error('Impossible de télécharger le fichier');
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
       }
       
       const blob = await response.blob();
@@ -107,9 +117,10 @@ export default function S1Algebre() {
       
       // Clean up the object URL
       window.URL.revokeObjectURL(downloadUrl);
+      console.log('✅ Download completed:', filename);
     } catch (err) {
-      console.error('Download error:', err);
-      alert('Erreur lors du téléchargement du fichier');
+      console.error('❌ Download error:', err);
+      alert(`Erreur lors du téléchargement: ${err.message}`);
     }
   };
 
@@ -421,6 +432,9 @@ export default function S1Algebre() {
               onError={(e) => {
                 console.error('PDF loading error:', e);
               }}
+              onLoad={() => {
+                console.log('✅ PDF loaded successfully:', selectedPdf);
+              }}
             >
               <div style={styles.fallbackMessage}>
                 <h3>Navigateur non compatible</h3>
@@ -445,7 +459,8 @@ export default function S1Algebre() {
                 <strong>🌐 Serveur:</strong> {API_BASE_URL} • 
                 <strong> PDFs trouvés:</strong> {pdfFiles.length} • 
                 <strong> Sélectionné:</strong> {selectedPdf || 'Aucun'} •
-                <strong> Mode:</strong> {import.meta.env.MODE}
+                <strong> Mode:</strong> {import.meta.env.MODE} •
+                <strong> Platform:</strong> Vercel Serverless
               </div>
             </div>
           </div>
