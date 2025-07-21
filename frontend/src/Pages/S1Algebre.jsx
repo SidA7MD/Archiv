@@ -15,7 +15,8 @@ import {
 } from "react-icons/md";
 
 export default function S1Algebre() {
-  const [selectedPdf, setSelectedPdf] = useState("ch1");
+  const [selectedPdf, setSelectedPdf] = useState("");
+  const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -23,27 +24,6 @@ export default function S1Algebre() {
   const API_BASE_URL = import.meta.env.DEV
     ? import.meta.env.VITE_API_URL || "http://localhost:5000"
     : import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
-
-  const chapters = [
-    { 
-      id: "ch1", 
-      title: "Chapitre 1", 
-      filename: "ch1-algebre-de-base.pdf",
-      description: "Algèbre de base et opérations fondamentales"
-    },
-    { 
-      id: "ch2", 
-      title: "Chapitre 2", 
-      filename: "ch2-equations-lineaires.pdf",
-      description: "Équations linéaires et systèmes"
-    },
-    { 
-      id: "ch3", 
-      title: "Chapitre 3", 
-      filename: "ch3-fonctions-quadratiques.pdf",
-      description: "Fonctions quadratiques et paraboles"
-    }
-  ];
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -55,13 +35,47 @@ export default function S1Algebre() {
     try {
       setLoading(true);
       setError(null);
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setLoading(false);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
+      const response = await fetch(`${API_BASE_URL}/api/pdf/list`, {
+        method: "GET",
+        mode: "cors",
+        signal: controller.signal,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.pdfs)) {
+        setPdfFiles(data.pdfs);
+        if (data.pdfs.length > 0 && !selectedPdf) {
+          setSelectedPdf(data.pdfs[0].filename);
+        } else if (data.pdfs.length === 0) {
+          setSelectedPdf("");
+        }
+      } else {
+        setPdfFiles([]);
+        setSelectedPdf("");
+        setError("Format de données invalide reçu du serveur.");
+      }
     } catch (err) {
-      setError("Impossible de charger les ressources");
+      if (err.name === "AbortError") {
+        setError("Délai d'attente dépassé. Veuillez réessayer.");
+      } else {
+        setError(`Impossible de charger les PDFs: ${err.message}`);
+      }
+    } finally {
       setLoading(false);
     }
-  }, []);
+  }, [API_BASE_URL, selectedPdf]);
 
   useEffect(() => {
     fetchPdfList();
@@ -70,22 +84,46 @@ export default function S1Algebre() {
   const getPdfUrl = (filename) =>
     filename ? `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}` : "";
 
-  const downloadPdf = () => {
-    const chapter = chapters.find(ch => ch.id === selectedPdf);
-    if (chapter) {
-      alert(`Téléchargement de ${chapter.filename}`);
+  const downloadPdf = async (filename) => {
+    if (!filename) {
+      return alert("Aucun PDF sélectionné pour le téléchargement.");
+    }
+    try {
+      const response = await fetch(getPdfUrl(filename), {
+        method: "GET",
+        headers: { Accept: "application/pdf" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Échec du téléchargement PDF: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      alert("Erreur de téléchargement: " + err.message);
     }
   };
 
-  const openPdf = () => {
-    const chapter = chapters.find(ch => ch.id === selectedPdf);
-    if (chapter) {
-      if (isMobile) {
-        window.open(getPdfUrl(chapter.filename), '_blank');
-      } else {
-        alert(`Ouverture de ${chapter.filename}`);
-      }
+  const getChapterName = (filename) => {
+    if (!filename) return "Chapitre";
+    const lower = filename.toLowerCase();
+    const match = lower.match(/ch\s?([ivx\d]+)/);
+    if (match && match[1]) {
+      const romanNumerals = {
+        "1": "I", "2": "II", "3": "III", "4": "IV", "5": "V",
+        "6": "VI", "7": "VII", "8": "VIII", "9": "IX", "10": "X",
+      };
+      return `Chapitre ${romanNumerals[match[1]] || match[1].toUpperCase()}`;
     }
+    return lower.includes("course") || lower.includes("cours") ? "Cours" : "Chapitre";
   };
 
   const LoadingState = () => (
@@ -201,10 +239,71 @@ export default function S1Algebre() {
     </div>
   );
 
+  const EmptyState = () => (
+    <div style={{
+      minHeight: "100vh",
+      background: isMobile ? "#ffffff" : "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "20px"
+    }}>
+      <div style={{
+        background: "white",
+        borderRadius: isMobile ? "20px" : "24px",
+        padding: isMobile ? "40px 30px" : "50px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        textAlign: "center",
+        maxWidth: "400px",
+        width: "100%"
+      }}>
+        <MdPictureAsPdf size={60} color="#6B7280" style={{ marginBottom: "20px" }} />
+        <h3 style={{
+          fontSize: "1.4rem",
+          fontWeight: "600",
+          color: "#1F2937",
+          margin: "0 0 8px"
+        }}>
+          Aucun document trouvé
+        </h3>
+        <p style={{
+          fontSize: "1rem",
+          color: "#6B7280",
+          margin: "0 0 24px"
+        }}>
+          Aucun document n'est disponible pour le moment.
+        </p>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={fetchPdfList}
+          style={{
+            background: "#8B5CF6",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            padding: "12px 24px",
+            fontSize: "1rem",
+            fontWeight: "500",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            margin: "0 auto"
+          }}
+        >
+          <MdRefresh size={18} />
+          Actualiser la liste
+        </motion.button>
+      </div>
+    </div>
+  );
+
   if (loading) return <LoadingState />;
   if (error) return <ErrorState />;
+  if (pdfFiles.length === 0) return <EmptyState />;
 
-  const selectedChapter = chapters.find(ch => ch.id === selectedPdf);
+  const currentPdf = pdfFiles.find((pdf) => pdf.filename === selectedPdf);
 
   // Desktop Layout with PDF Viewer
   if (!isMobile) {
@@ -284,19 +383,19 @@ export default function S1Algebre() {
             {/* Chapter Selection */}
             <div style={{ marginBottom: "28px" }}>
               <AnimatePresence>
-                {chapters.map((chapter, index) => (
+                {pdfFiles.map((pdf, index) => (
                   <motion.button
-                    key={chapter.id}
+                    key={pdf.filename}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + index * 0.1 }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedPdf(chapter.id)}
+                    onClick={() => setSelectedPdf(pdf.filename)}
                     style={{
                       width: "100%",
-                      background: selectedPdf === chapter.id ? "#8B5CF6" : "#F9FAFB",
-                      color: selectedPdf === chapter.id ? "white" : "#374151",
+                      background: selectedPdf === pdf.filename ? "#8B5CF6" : "#F9FAFB",
+                      color: selectedPdf === pdf.filename ? "white" : "#374151",
                       border: "none",
                       borderRadius: "8px",
                       padding: "16px",
@@ -309,13 +408,13 @@ export default function S1Algebre() {
                     }}
                   >
                     <div style={{ marginBottom: "4px" }}>
-                      {chapter.title}
+                      {getChapterName(pdf.filename)}
                     </div>
                     <div style={{
                       fontSize: "0.875rem",
-                      opacity: selectedPdf === chapter.id ? 0.9 : 0.6
+                      opacity: selectedPdf === pdf.filename ? 0.9 : 0.6
                     }}>
-                      {chapter.description}
+                      {pdf.title || pdf.filename}
                     </div>
                   </motion.button>
                 ))}
@@ -334,55 +433,62 @@ export default function S1Algebre() {
                 transition={{ delay: 0.6 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={downloadPdf}
+                onClick={() => downloadPdf(selectedPdf)}
+                disabled={!selectedPdf}
                 style={{
                   width: "100%",
-                  background: "#EF4444",
+                  background: selectedPdf ? "#EF4444" : "#D1D5DB",
                   color: "white",
                   border: "none",
                   borderRadius: "8px",
                   padding: "14px 20px",
                   fontSize: "1rem",
                   fontWeight: "500",
-                  cursor: "pointer",
+                  cursor: selectedPdf ? "pointer" : "not-allowed",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
-                  transition: "all 0.2s ease"
+                  transition: "all 0.2s ease",
+                  opacity: selectedPdf ? 1 : 0.6
                 }}
               >
                 <MdCloudDownload size={20} />
                 Télécharger
               </motion.button>
 
-              <motion.button
+              <motion.a
+                href={getPdfUrl(selectedPdf)}
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={openPdf}
                 style={{
                   width: "100%",
-                  background: "#10B981",
+                  background: selectedPdf ? "#10B981" : "#D1D5DB",
                   color: "white",
                   border: "none",
                   borderRadius: "8px",
                   padding: "14px 20px",
                   fontSize: "1rem",
                   fontWeight: "500",
-                  cursor: "pointer",
+                  cursor: selectedPdf ? "pointer" : "not-allowed",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
-                  transition: "all 0.2s ease"
+                  transition: "all 0.2s ease",
+                  textDecoration: "none",
+                  opacity: selectedPdf ? 1 : 0.6,
+                  pointerEvents: selectedPdf ? "auto" : "none"
                 }}
               >
                 <MdOpenInNew size={20} />
                 Ouvrir
-              </motion.button>
+              </motion.a>
             </div>
 
             {/* Device Info */}
@@ -452,59 +558,54 @@ export default function S1Algebre() {
                   margin: 0,
                   opacity: 0.8
                 }}>
-                  {selectedChapter?.title} - {selectedChapter?.description}
+                  {currentPdf?.title || getChapterName(selectedPdf)} - {selectedPdf}
                 </p>
               </div>
             </div>
 
             {/* PDF Content Area */}
-            <div style={{
-              height: "calc(100% - 80px)",
-              background: "#F9FAFB",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#6B7280",
-              fontSize: "1.125rem"
-            }}>
-              <div style={{ textAlign: "center" }}>
-                <motion.div
-                  animate={{ 
-                    y: [-10, 10, -10],
-                    rotate: [0, 5, -5, 0]
-                  }}
-                  transition={{ 
-                    duration: 4, 
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{ marginBottom: "20px" }}
-                >
-                  <MdPictureAsPdf size={64} color="#8B5CF6" />
-                </motion.div>
-                <h4 style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "600",
-                  color: "#1F2937",
-                  margin: "0 0 8px"
-                }}>
-                  PDF Viewer
-                </h4>
-                <p style={{
-                  margin: "0 0 4px",
-                  fontWeight: "500"
-                }}>
-                  Contenu du {selectedChapter?.title}
-                </p>
-                <p style={{
-                  margin: 0,
-                  fontSize: "0.875rem",
-                  opacity: 0.7
-                }}>
-                  {selectedChapter?.filename}
-                </p>
+            {selectedPdf ? (
+              <iframe
+                src={getPdfUrl(selectedPdf)}
+                title={currentPdf?.title || getChapterName(selectedPdf)}
+                style={{
+                  width: "100%",
+                  height: "calc(100% - 80px)",
+                  border: "none",
+                  background: "#F9FAFB"
+                }}
+                loading="lazy"
+              />
+            ) : (
+              <div style={{
+                height: "calc(100% - 80px)",
+                background: "#F9FAFB",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#6B7280",
+                fontSize: "1.125rem"
+              }}>
+                <div style={{ textAlign: "center" }}>
+                  <MdPictureAsPdf size={64} color="#D1D5DB" style={{ marginBottom: "20px" }} />
+                  <h4 style={{
+                    fontSize: "1.5rem",
+                    fontWeight: "600",
+                    color: "#9CA3AF",
+                    margin: "0 0 8px"
+                  }}>
+                    Sélectionnez un chapitre
+                  </h4>
+                  <p style={{
+                    margin: 0,
+                    fontSize: "1rem",
+                    color: "#6B7280"
+                  }}>
+                    Choisissez un document à visualiser
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>
@@ -581,18 +682,18 @@ export default function S1Algebre() {
         {/* Chapter Selection */}
         <div style={{ marginBottom: "32px" }}>
           <AnimatePresence>
-            {chapters.map((chapter, index) => (
+            {pdfFiles.map((pdf, index) => (
               <motion.button
-                key={chapter.id}
+                key={pdf.filename}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setSelectedPdf(chapter.id)}
+                onClick={() => setSelectedPdf(pdf.filename)}
                 style={{
                   width: "100%",
-                  background: selectedPdf === chapter.id ? "#8B5CF6" : "#F9FAFB",
-                  color: selectedPdf === chapter.id ? "white" : "#374151",
+                  background: selectedPdf === pdf.filename ? "#8B5CF6" : "#F9FAFB",
+                  color: selectedPdf === pdf.filename ? "white" : "#374151",
                   border: "none",
                   borderRadius: "8px",
                   padding: "16px",
@@ -605,13 +706,13 @@ export default function S1Algebre() {
                 }}
               >
                 <div style={{ marginBottom: "4px" }}>
-                  {chapter.title}
+                  {getChapterName(pdf.filename)}
                 </div>
                 <div style={{
                   fontSize: "0.875rem",
-                  opacity: selectedPdf === chapter.id ? 0.9 : 0.6
+                  opacity: selectedPdf === pdf.filename ? 0.9 : 0.6
                 }}>
-                  {chapter.description}
+                  {pdf.title || pdf.filename}
                 </div>
               </motion.button>
             ))}
@@ -630,54 +731,61 @@ export default function S1Algebre() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
             whileTap={{ scale: 0.98 }}
-            onClick={downloadPdf}
+            onClick={() => downloadPdf(selectedPdf)}
+            disabled={!selectedPdf}
             style={{
               width: "100%",
-              background: "#EF4444",
+              background: selectedPdf ? "#EF4444" : "#D1D5DB",
               color: "white",
               border: "none",
               borderRadius: "8px",
               padding: "16px 20px",
               fontSize: "1rem",
               fontWeight: "500",
-              cursor: "pointer",
+              cursor: selectedPdf ? "pointer" : "not-allowed",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
+              opacity: selectedPdf ? 1 : 0.6
             }}
           >
             <MdCloudDownload size={20} />
             Télécharger
           </motion.button>
 
-          <motion.button
+          <motion.a
+            href={getPdfUrl(selectedPdf)}
+            target="_blank"
+            rel="noopener noreferrer"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
             whileTap={{ scale: 0.98 }}
-            onClick={openPdf}
             style={{
               width: "100%",
-              background: "#10B981",
+              background: selectedPdf ? "#10B981" : "#D1D5DB",
               color: "white",
               border: "none",
               borderRadius: "8px",
               padding: "16px 20px",
               fontSize: "1rem",
               fontWeight: "500",
-              cursor: "pointer",
+              cursor: selectedPdf ? "pointer" : "not-allowed",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
+              textDecoration: "none",
+              opacity: selectedPdf ? 1 : 0.6,
+              pointerEvents: selectedPdf ? "auto" : "none"
             }}
           >
             <MdOpenInNew size={20} />
             Ouvrir
-          </motion.button>
+          </motion.a>
         </div>
 
         {/* Mobile Info Card */}
