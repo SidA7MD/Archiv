@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  MdDescription,
+  MdFileDownload,
+  MdLink,
+  MdRefresh,
+  MdAccessTime,
+  MdErrorOutline,
+  MdFolderOpen,
+  MdOutlineLibraryBooks,
+} from "react-icons/md";
 
 export default function S1Algebre() {
   const [selectedPdf, setSelectedPdf] = useState("");
@@ -8,68 +18,43 @@ export default function S1Algebre() {
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  // Handle window resize for mobile detection
+  const API_BASE_URL = import.meta.env.DEV
+    ? import.meta.env.VITE_API_URL || "http://localhost:5000"
+    : import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Updated API configuration for Vercel deployment
-  const getApiBaseUrl = () => {
-    if (import.meta.env.DEV) {
-      return import.meta.env.VITE_API_URL || "http://localhost:5000";
-    }
-    return import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
-  };
-
-  const API_BASE_URL = getApiBaseUrl();
 
   const fetchPdfList = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
-      
       const response = await fetch(`${API_BASE_URL}/api/pdf/list`, {
-        method: 'GET',
-        mode: 'cors',
+        method: "GET",
+        mode: "cors",
         signal: controller.signal,
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
-      
       clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status} ${response.statusText}`);
-      }
-      
+      if (!response.ok) throw new Error("Failed to load PDF list");
       const data = await response.json();
-      
       if (data.success && Array.isArray(data.pdfs)) {
         setPdfFiles(data.pdfs);
-        if (data.pdfs.length > 0) {
-          setSelectedPdf(data.pdfs[0].filename);
-        }
+        if (data.pdfs.length > 0) setSelectedPdf(data.pdfs[0].filename);
       } else {
         setPdfFiles([]);
         setSelectedPdf("");
       }
     } catch (err) {
-      if (err.name === 'AbortError') {
-        setError('Request timeout. Check your connection.');
-      } else if (err.message.includes('fetch') || err.message.includes('NetworkError')) {
-        setError(`Could not connect to server (${API_BASE_URL}).`);
-      } else {
-        setError(`Error: ${err.message}`);
-      }
+      setError("Could not load PDFs. " + err.message);
     } finally {
       setLoading(false);
     }
@@ -79,391 +64,194 @@ export default function S1Algebre() {
     fetchPdfList();
   }, [fetchPdfList]);
 
-  const getPdfUrl = (filename) => {
-    if (!filename) return '';
-    return `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}`;
-  };
+  const getPdfUrl = (filename) =>
+    filename ? `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}` : "";
 
   const downloadPdf = async (filename) => {
-    if (!filename) return;
-    
+    if (!filename) return alert("No PDF selected");
     try {
-      const url = getPdfUrl(filename);
-      const response = await fetch(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/pdf',
-        }
+      const response = await fetch(getPdfUrl(filename), {
+        method: "GET",
+        headers: { Accept: "application/pdf" },
       });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
       const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
-      window.URL.revokeObjectURL(downloadUrl);
+      URL.revokeObjectURL(downloadUrl);
     } catch (err) {
-      alert(`Download error: ${err.message}`);
+      alert("Download error: " + err.message);
     }
   };
 
   const getChapterName = (filename) => {
-    if (!filename) return 'Chapter';
-    
+    if (!filename) return "Chapter";
     const lower = filename.toLowerCase();
-    if (lower.includes('ch i') || lower.includes('ch 1') || lower.includes('chapter 1')) {
-      return 'Chapter I';
-    } else if (lower.includes('ch ii') || lower.includes('ch 2') || lower.includes('chapter 2')) {
-      return 'Chapter II';
-    } else if (lower.includes('ch iii') || lower.includes('ch 3') || lower.includes('chapter 3')) {
-      return 'Chapter III';
-    } else if (lower.includes('ch iv') || lower.includes('ch 4') || lower.includes('chapter 4')) {
-      return 'Chapter IV';
+    const match = lower.match(/ch\s?([ivx\d]+)/);
+    if (match && match[1]) {
+      const romanNumerals = {
+        "1": "I",
+        "2": "II",
+        "3": "III",
+        "4": "IV",
+        "5": "V",
+      };
+      return `Chapter ${romanNumerals[match[1]] || match[1].toUpperCase()}`;
     }
-    return 'Chapter';
+    return lower.includes("course") ? "Course" : "Chapter";
   };
 
-  // Responsive styles
-  const styles = {
-    container: {
-      maxWidth: '1400px',
-      margin: '0 auto',
-      padding: isMobile ? '15px' : '20px',
-      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
-      minHeight: '100vh',
-      background: '#f8fafc',
-    },
-    header: {
-      textAlign: 'center',
-      marginBottom: isMobile ? '20px' : '30px',
-    },
-    backButton: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      color: '#667eea',
-      textDecoration: 'none',
-      fontSize: isMobile ? '0.85rem' : '0.95rem',
-      fontWeight: '600',
-      marginBottom: '20px',
-      padding: isMobile ? '8px 14px' : '10px 18px',
-      borderRadius: '14px',
-      background: 'rgba(102, 126, 234, 0.08)',
-      border: '2px solid rgba(102, 126, 234, 0.15)',
-      transition: 'all 0.3s ease',
-      ':hover': {
-        background: 'rgba(102, 126, 234, 0.15)',
-        borderColor: 'rgba(102, 126, 234, 0.3)',
-      }
-    },
-    title: {
-      fontSize: isMobile ? '1.6rem' : 'clamp(1.8rem, 4vw, 2.5rem)',
-      fontWeight: '900',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-      margin: '0 0 15px 0',
-      lineHeight: '1.2',
-    },
-    subtitle: {
-      color: '#64748b',
-      fontSize: isMobile ? '0.95rem' : '1.1rem',
-      margin: 0,
-    },
-    tabsContainer: {
-      overflowX: 'auto',
-      paddingBottom: '10px',
-      marginBottom: isMobile ? '20px' : '30px',
-      WebkitOverflowScrolling: 'touch',
-      scrollbarWidth: 'none',
-      msOverflowStyle: 'none',
-      '::-webkit-scrollbar': {
-        display: 'none',
-      }
-    },
-    tabs: {
-      display: 'flex',
-      gap: '8px',
-      padding: isMobile ? '0 5px 5px' : '0 10px 10px',
-      minWidth: 'fit-content',
-    },
-    tabButton: (isActive) => ({
-      padding: isMobile ? '10px 15px' : '12px 20px',
-      borderRadius: '10px',
-      border: 'none',
-      fontSize: isMobile ? '0.8rem' : '0.9rem',
-      fontWeight: '600',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      background: isActive 
-        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-        : 'white',
-      color: isActive ? 'white' : '#64748b',
-      boxShadow: isActive 
-        ? '0 4px 12px rgba(102, 126, 234, 0.3)'
-        : '0 2px 8px rgba(0, 0, 0, 0.1)',
-      minWidth: isMobile ? '110px' : '140px',
-      whiteSpace: 'nowrap',
-      flexShrink: 0,
-    }),
-    pdfContainer: {
-      background: 'white',
-      borderRadius: '12px',
-      padding: isMobile ? '15px' : '20px',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-      border: '1px solid #e2e8f0',
-      minHeight: isMobile ? 'auto' : '800px',
-    },
-    controls: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      marginBottom: '20px',
-      paddingBottom: '15px',
-      borderBottom: '2px solid #e2e8f0',
-      flexWrap: 'wrap',
-      gap: '15px',
-    },
-    controlsLeft: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '5px',
-      minWidth: isMobile ? '100%' : '200px',
-    },
-    controlsRight: {
-      display: 'flex',
-      gap: isMobile ? '8px' : '12px',
-      flexWrap: 'wrap',
-      width: isMobile ? '100%' : 'auto',
-      justifyContent: isMobile ? 'space-between' : 'flex-start',
-    },
-    button: {
-      padding: isMobile ? '8px 12px' : '10px 16px',
-      borderRadius: '8px',
-      border: 'none',
-      background: '#667eea',
-      color: 'white',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      fontSize: isMobile ? '0.8rem' : '0.9rem',
-      fontWeight: '500',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '6px',
-      textDecoration: 'none',
-      whiteSpace: 'nowrap',
-      flex: isMobile ? '1 1 auto' : '0 0 auto',
-      ':hover': {
-        opacity: 0.9,
-        transform: 'translateY(-1px)',
-      },
-      ':active': {
-        transform: 'translateY(0)',
-      }
-    },
-    iframeContainer: {
-      border: '1px solid #e2e8f0',
-      borderRadius: '8px',
-      overflow: 'hidden',
-      minHeight: isMobile ? '400px' : '600px',
-      position: 'relative',
-      marginTop: isMobile ? '15px' : '0',
-    },
-    iframe: {
-      width: '100%',
-      height: isMobile ? '400px' : 'clamp(600px, 80vh, 800px)',
-      border: 'none',
-      borderRadius: '8px',
-    },
-    loadingContainer: {
-      textAlign: 'center',
-      marginTop: '100px',
-    },
-    errorContainer: {
-      textAlign: 'center',
-      marginTop: '100px',
-      color: '#ef4444',
-    },
-    fallbackMessage: {
-      padding: '40px',
-      textAlign: 'center',
-      color: '#64748b',
-      background: '#f8fafc',
-    },
-    fileInfo: {
-      color: '#64748b',
-      fontSize: isMobile ? '0.75rem' : '0.9rem',
-      margin: 0,
-    },
-    chapterTitle: {
-      color: '#334155',
-      fontSize: isMobile ? '1rem' : '1.2rem',
-      margin: 0,
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-    }
+  const getButtonStyle = (color) => ({
+    padding: "12px 24px",
+    borderRadius: "16px",
+    fontWeight: 600,
+    fontSize: "0.95rem",
+    cursor: "pointer",
+    border: "none",
+    background: color,
+    color: "#fff",
+    transition: "transform 0.2s ease-in-out",
+    boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  });
+
+  const containerStyle = {
+    minHeight: "100vh",
+    background: "#ffffff",
+    padding: "40px 20px",
+    fontFamily: "Inter, sans-serif",
   };
 
-  const currentPdf = pdfFiles.find(pdf => pdf.filename === selectedPdf);
-
-  if (loading) {
+  if (loading)
     return (
-      <div style={styles.container}>
-        <div style={styles.loadingContainer}>
-          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🔄</div>
-          <div style={{ fontSize: '1.2rem', color: '#64748b' }}>Loading courses...</div>
-        </div>
+      <div style={containerStyle}>
+        <MdAccessTime size={48} />
+        <p>Loading...</p>
       </div>
     );
-  }
 
-  if (error) {
+  if (error)
     return (
-      <div style={styles.container}>
-        <div style={styles.errorContainer}>
-          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>⚠️</div>
-          <div style={{ fontSize: '1.2rem', marginBottom: '15px' }}>{error}</div>
-          <button 
-            onClick={fetchPdfList}
-            style={styles.button}
-          >
-            🔄 Try Again
-          </button>
-        </div>
+      <div style={containerStyle}>
+        <MdErrorOutline size={48} />
+        <p>{error}</p>
       </div>
     );
-  }
 
-  if (pdfFiles.length === 0) {
+  if (pdfFiles.length === 0)
     return (
-      <div style={styles.container}>
-        <div style={styles.loadingContainer}>
-          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>📂</div>
-          <div style={{ fontSize: '1.2rem', color: '#64748b', marginBottom: '15px' }}>
-            No PDFs found on server
-          </div>
-          <button 
-            onClick={fetchPdfList}
-            style={styles.button}
-          >
-            🔄 Refresh
-          </button>
-        </div>
+      <div style={containerStyle}>
+        <MdFolderOpen size={48} />
+        <p>No content found</p>
       </div>
     );
-  }
+
+  const currentPdf = pdfFiles.find((pdf) => pdf.filename === selectedPdf);
 
   return (
-    <main style={styles.container}>
-      <div style={styles.header}>
-        <Link to="/s1" style={styles.backButton}>
-          ← Back to courses
-        </Link>
-        
-        <h1 style={styles.title}>🔢 Linear Algebra</h1>
-        <p style={styles.subtitle}>
-          Mathematics Course - Semester 1
-        </p>
-      </div>
-
-      <div style={styles.tabsContainer}>
-        <div style={styles.tabs}>
-          {pdfFiles.map((pdf) => (
-            <button
-              key={pdf.filename}
-              style={styles.tabButton(selectedPdf === pdf.filename)}
-              onClick={() => setSelectedPdf(pdf.filename)}
-              title={pdf.title}
-            >
-              📄 {getChapterName(pdf.filename)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={styles.pdfContainer}>
-        <div style={styles.controls}>
-          <div style={styles.controlsLeft}>
-            <h3 style={styles.chapterTitle}>
-              📖 {currentPdf?.title || 'Select a chapter'}
-            </h3>
-            {currentPdf && (
-              <p style={styles.fileInfo}>
-                Size: {Math.round(currentPdf.size / 1024)} KB • 
-                Modified: {new Date(currentPdf.lastModified).toLocaleDateString()}
-              </p>
+    <div style={containerStyle}>
+      {/* Tabs */}
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+          flexWrap: "wrap",
+          marginBottom: "24px",
+        }}
+      >
+        {pdfFiles.map((pdf) => (
+          <motion.button
+            key={pdf.filename}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={getButtonStyle(
+              selectedPdf === pdf.filename ? "#e94057" : "#7b2ff7"
             )}
-          </div>
-          
-          <div style={styles.controlsRight}>
-            <button 
-              onClick={() => downloadPdf(selectedPdf)}
-              style={styles.button}
-              title="Download PDF"
-              disabled={!selectedPdf}
-            >
-              📥 Download
-            </button>
-            
-            <a
-              href={selectedPdf ? getPdfUrl(selectedPdf) : '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                ...styles.button, 
-                background: selectedPdf ? '#22c55e' : '#94a3b8',
-                pointerEvents: selectedPdf ? 'auto' : 'none'
-              }}
-              title="Open in new tab"
-            >
-              🔗 New Tab
-            </a>
+            onClick={() => setSelectedPdf(pdf.filename)}
+          >
+            <MdDescription /> {getChapterName(pdf.filename)}
+          </motion.button>
+        ))}
+      </div>
 
-            <button
-              onClick={fetchPdfList}
-              style={{...styles.button, background: '#f59e0b'}}
-              title="Refresh list"
-            >
-              🔄 Refresh
-            </button>
-          </div>
+      {/* Content Card */}
+      <div
+        style={{
+          background: "#f9f9f9",
+          borderRadius: "20px",
+          padding: "24px",
+          boxShadow: "0 10px 40px rgba(0,0,0,0.05)",
+        }}
+      >
+        <h3 style={{ marginBottom: "12px", display: "flex", gap: "8px" }}>
+          <MdOutlineLibraryBooks size={24} />
+          {currentPdf?.title || "Select a Chapter"}
+        </h3>
+
+        {/* Controls */}
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            flexWrap: "wrap",
+            marginBottom: "24px",
+          }}
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => downloadPdf(selectedPdf)}
+            disabled={!selectedPdf}
+            style={getButtonStyle("#ff9f43")}
+          >
+            <MdFileDownload /> Download
+          </motion.button>
+
+          <motion.a
+            href={getPdfUrl(selectedPdf)}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            style={getButtonStyle("#00d2d3")}
+          >
+            <MdLink /> Open in New Tab
+          </motion.a>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={fetchPdfList}
+            style={getButtonStyle("#5f27cd")}
+          >
+            <MdRefresh /> Refresh
+          </motion.button>
         </div>
 
+        {/* PDF Viewer */}
         {selectedPdf && (
-          <div style={styles.iframeContainer}>
+          <div
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "12px",
+              overflow: "hidden",
+              height: "600px",
+            }}
+          >
             <iframe
               src={getPdfUrl(selectedPdf)}
-              style={styles.iframe}
-              title={`PDF: ${currentPdf?.title}`}
-            >
-              <div style={styles.fallbackMessage}>
-                <h3>Browser not supported</h3>
-                <p>Your browser doesn't support PDF display.</p>
-                <a 
-                  href={getPdfUrl(selectedPdf)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={styles.button}
-                >
-                  🔗 Open PDF
-                </a>
-              </div>
-            </iframe>
+              title={currentPdf?.title}
+              style={{ width: "100%", height: "100%", border: "none" }}
+            />
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
