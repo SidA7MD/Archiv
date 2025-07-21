@@ -15,8 +15,8 @@ const getApiBaseUrl = () => {
     return import.meta.env.VITE_API_URL || "http://localhost:5000";
   }
   
-  // In production, use your Vercel deployment URL
-  return import.meta.env.VITE_PROD_API_URL || "https://archiv-5dvuj7691-sidi110s-projects.vercel.app";
+  // In production, use relative URLs (same domain)
+  return "";  // Empty string = same domain
 };
   const API_BASE_URL = getApiBaseUrl();
 
