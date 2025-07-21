@@ -16,9 +16,8 @@ const getApiBaseUrl = () => {
   }
   
   // In production, use your Vercel deployment URL
-  return import.meta.env.VITE_PROD_API_URL || "https://your-backend-name.vercel.app";
+  return import.meta.env.VITE_PROD_API_URL || "https://archiv-5dvuj7691-sidi110s-projects.vercel.app";
 };
-
   const API_BASE_URL = getApiBaseUrl();
 
   // Fetch available PDFs from server
