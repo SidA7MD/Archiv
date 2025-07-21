@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 
 export default function S1Algebre() {
@@ -8,24 +8,21 @@ export default function S1Algebre() {
   const [error, setError] = useState(null);
 
   // Updated API configuration for Vercel deployment
-const getApiBaseUrl = () => {
-  // Check if we're in development mode
-  if (import.meta.env.DEV) {
-    // For local development
-    return import.meta.env.VITE_API_URL || "http://localhost:5000";
-  }
-  
-  // In production, use your separate backend URL
-  return import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
-};
+  const getApiBaseUrl = () => {
+    // Check if we're in development mode
+    if (import.meta.env.DEV) {
+      // For local development
+      return import.meta.env.VITE_API_URL || "http://localhost:5000";
+    }
+    
+    // In production, use your separate backend URL
+    return import.meta.env.VITE_PROD_API_URL || "https://archiv-three.vercel.app";
+  };
+
   const API_BASE_URL = getApiBaseUrl();
 
-  // Fetch available PDFs from server
-  useEffect(() => {
-    fetchPdfList();
-  }, []);
-
-  const fetchPdfList = async () => {
+  // Use useCallback to memoize the function and prevent unnecessary re-renders
+  const fetchPdfList = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -60,7 +57,12 @@ const getApiBaseUrl = () => {
         }
         console.log(`✅ Loaded ${data.pdfs.length} PDF files`);
       } else {
-        throw new Error('Format de réponse invalide du serveur');
+        // Handle the case where no PDFs are found
+        setPdfFiles([]);
+        setSelectedPdf("");
+        if (data.message) {
+          console.warn(`⚠️ ${data.message}`);
+        }
       }
     } catch (err) {
       if (err.name === 'AbortError') {
@@ -75,12 +77,16 @@ const getApiBaseUrl = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE_URL]); // Only re-create if API_BASE_URL changes
 
-  // Updated to work with Vercel's rewrite rules
+  // Fixed useEffect - runs only once on component mount
+  useEffect(() => {
+    fetchPdfList();
+  }, [fetchPdfList]); // Include fetchPdfList in dependencies since it's memoized
+
+  // Rest of your component code stays the same...
   const getPdfUrl = (filename) => {
     if (!filename) return '';
-    // This will use the rewrite rule in vercel.json to redirect to /api/pdf/[filename]
     return `${API_BASE_URL}/pdfs/${encodeURIComponent(filename)}`;
   };
 
@@ -113,7 +119,6 @@ const getApiBaseUrl = () => {
       link.click();
       document.body.removeChild(link);
       
-      // Clean up the object URL
       window.URL.revokeObjectURL(downloadUrl);
       console.log('✅ Download completed:', filename);
     } catch (err) {
@@ -138,7 +143,7 @@ const getApiBaseUrl = () => {
     return 'Chapitre';
   };
 
-  // Enhanced styles with better responsiveness
+  // Your styles object stays exactly the same...
   const styles = {
     container: {
       maxWidth: '1400px',
@@ -334,8 +339,11 @@ const getApiBaseUrl = () => {
         <div style={styles.loadingContainer}>
           <div style={{ fontSize: '3rem', marginBottom: '20px' }}>📂</div>
           <div style={{ fontSize: '1.2rem', color: '#64748b', marginBottom: '15px' }}>
-            Aucun PDF trouvé
+            Aucun PDF trouvé sur le serveur
           </div>
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '20px' }}>
+            Les fichiers PDF ne sont peut-être pas encore déployés sur Vercel.
+          </p>
           <button 
             onClick={fetchPdfList}
             style={styles.button}
