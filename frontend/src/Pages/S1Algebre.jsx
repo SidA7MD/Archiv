@@ -126,6 +126,45 @@ export default function S1Algebre() {
     return lower.includes("course") || lower.includes("cours") ? "Cours" : "Chapitre";
   };
 
+  // Common Button Component
+  const ActionButton = ({ 
+    children, 
+    onClick, 
+    icon: Icon, 
+    color = "#8B5CF6", 
+    disabled = false,
+    fullWidth = true,
+    isMobile
+  }) => (
+    <motion.button
+      whileHover={{ scale: disabled ? 1 : 1.03 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        width: fullWidth ? "100%" : "auto",
+        background: disabled ? "#E5E7EB" : color,
+        color: "white",
+        border: "none",
+        borderRadius: "12px",
+        padding: isMobile ? "14px 20px" : "16px 24px",
+        fontSize: isMobile ? "1rem" : "1.05rem",
+        fontWeight: "500",
+        cursor: disabled ? "not-allowed" : "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        transition: "all 0.2s ease",
+        boxShadow: disabled ? "none" : "0 4px 6px rgba(0,0,0,0.1)",
+        opacity: disabled ? 0.7 : 1
+      }}
+    >
+      {Icon && <Icon size={isMobile ? 20 : 22} />}
+      {children}
+    </motion.button>
+  );
+
   const LoadingState = () => (
     <div style={{
       minHeight: "100vh",
@@ -139,7 +178,7 @@ export default function S1Algebre() {
         background: "white",
         borderRadius: isMobile ? "20px" : "24px",
         padding: isMobile ? "40px 30px" : "50px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
         textAlign: "center",
         maxWidth: "400px",
         width: "100%"
@@ -192,7 +231,7 @@ export default function S1Algebre() {
         background: "white",
         borderRadius: isMobile ? "20px" : "24px",
         padding: isMobile ? "40px 30px" : "50px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
         textAlign: "center",
         maxWidth: "400px",
         width: "100%"
@@ -213,28 +252,14 @@ export default function S1Algebre() {
         }}>
           {error}
         </p>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={fetchPdfList}
-          style={{
-            background: "#EF4444",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            padding: "12px 24px",
-            fontSize: "1rem",
-            fontWeight: "500",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            margin: "0 auto"
-          }}
+        <ActionButton 
+          onClick={fetchPdfList} 
+          color="#EF4444" 
+          icon={MdRefresh}
+          isMobile={isMobile}
         >
-          <MdRefresh size={18} />
           Réessayer
-        </motion.button>
+        </ActionButton>
       </div>
     </div>
   );
@@ -252,7 +277,7 @@ export default function S1Algebre() {
         background: "white",
         borderRadius: isMobile ? "20px" : "24px",
         padding: isMobile ? "40px 30px" : "50px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
         textAlign: "center",
         maxWidth: "400px",
         width: "100%"
@@ -273,28 +298,14 @@ export default function S1Algebre() {
         }}>
           Aucun document n'est disponible pour le moment.
         </p>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={fetchPdfList}
-          style={{
-            background: "#8B5CF6",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            padding: "12px 24px",
-            fontSize: "1rem",
-            fontWeight: "500",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            margin: "0 auto"
-          }}
+        <ActionButton 
+          onClick={fetchPdfList} 
+          color="#8B5CF6" 
+          icon={MdRefresh}
+          isMobile={isMobile}
         >
-          <MdRefresh size={18} />
           Actualiser la liste
-        </motion.button>
+        </ActionButton>
       </div>
     </div>
   );
@@ -312,13 +323,13 @@ export default function S1Algebre() {
         minHeight: "100vh",
         background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
         padding: "40px",
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', sans-serif"
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
       }}>
         <div style={{
           display: "grid",
-          gridTemplateColumns: "420px 1fr",
-          gap: "40px",
-          maxWidth: "1400px",
+          gridTemplateColumns: "320px 1fr",
+          gap: "30px",
+          maxWidth: "1600px",
           margin: "0 auto",
           alignItems: "start"
         }}>
@@ -329,9 +340,9 @@ export default function S1Algebre() {
             transition={{ duration: 0.6 }}
             style={{
               background: "white",
-              borderRadius: "24px",
-              padding: "32px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              borderRadius: "18px",
+              padding: "28px",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
               position: "sticky",
               top: "40px"
             }}
@@ -353,7 +364,7 @@ export default function S1Algebre() {
               <div style={{
                 padding: "12px",
                 background: "#8B5CF6",
-                borderRadius: "8px",
+                borderRadius: "10px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center"
@@ -397,17 +408,21 @@ export default function S1Algebre() {
                       background: selectedPdf === pdf.filename ? "#8B5CF6" : "#F9FAFB",
                       color: selectedPdf === pdf.filename ? "white" : "#374151",
                       border: "none",
-                      borderRadius: "8px",
+                      borderRadius: "12px",
                       padding: "16px",
                       fontSize: "1rem",
                       fontWeight: "500",
                       cursor: "pointer",
-                      marginBottom: "8px",
+                      marginBottom: "10px",
                       textAlign: "left",
-                      transition: "all 0.2s ease"
+                      transition: "all 0.2s ease",
+                      boxShadow: selectedPdf === pdf.filename ? "0 4px 6px rgba(139, 92, 246, 0.3)" : "0 2px 4px rgba(0,0,0,0.05)"
                     }}
                   >
-                    <div style={{ marginBottom: "4px" }}>
+                    <div style={{ 
+                      marginBottom: "4px",
+                      fontWeight: selectedPdf === pdf.filename ? "600" : "500"
+                    }}>
                       {getChapterName(pdf.filename)}
                     </div>
                     <div style={{
@@ -425,70 +440,30 @@ export default function S1Algebre() {
             <div style={{
               display: "flex",
               flexDirection: "column",
-              gap: "12px"
+              gap: "14px"
             }}>
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => downloadPdf(selectedPdf)}
+              <ActionButton 
+                onClick={() => downloadPdf(selectedPdf)} 
+                color="#EF4444" 
+                icon={MdCloudDownload}
                 disabled={!selectedPdf}
-                style={{
-                  width: "100%",
-                  background: selectedPdf ? "#EF4444" : "#D1D5DB",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "14px 20px",
-                  fontSize: "1rem",
-                  fontWeight: "500",
-                  cursor: selectedPdf ? "pointer" : "not-allowed",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  transition: "all 0.2s ease",
-                  opacity: selectedPdf ? 1 : 0.6
-                }}
+                isMobile={isMobile}
               >
-                <MdCloudDownload size={20} />
                 Télécharger
-              </motion.button>
+              </ActionButton>
 
-              <motion.a
+              <ActionButton 
+                as="a"
                 href={getPdfUrl(selectedPdf)}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                style={{
-                  width: "100%",
-                  background: selectedPdf ? "#10B981" : "#D1D5DB",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "14px 20px",
-                  fontSize: "1rem",
-                  fontWeight: "500",
-                  cursor: selectedPdf ? "pointer" : "not-allowed",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  transition: "all 0.2s ease",
-                  textDecoration: "none",
-                  opacity: selectedPdf ? 1 : 0.6,
-                  pointerEvents: selectedPdf ? "auto" : "none"
-                }}
+                color="#10B981" 
+                icon={MdOpenInNew}
+                disabled={!selectedPdf}
+                isMobile={isMobile}
               >
-                <MdOpenInNew size={20} />
-                Ouvrir
-              </motion.a>
+                Ouvrir dans un nouvel onglet
+              </ActionButton>
             </div>
 
             {/* Device Info */}
@@ -498,20 +473,21 @@ export default function S1Algebre() {
               transition={{ delay: 0.8 }}
               style={{
                 marginTop: "24px",
-                padding: "16px",
-                background: "#F3F4F6",
-                borderRadius: "8px",
-                textAlign: "center"
+                padding: "18px",
+                background: "#F9FAFB",
+                borderRadius: "12px",
+                textAlign: "center",
+                border: "1px solid #F3F4F6"
               }}
             >
-              <MdLaptop size={24} color="#8B5CF6" style={{ marginBottom: "8px" }} />
+              <MdLaptop size={24} color="#8B5CF6" style={{ marginBottom: "10px" }} />
               <p style={{
                 fontSize: "0.875rem",
                 color: "#6B7280",
                 margin: 0,
-                lineHeight: "1.4"
+                lineHeight: "1.5"
               }}>
-                Mode Bureau - Visionneuse intégrée
+                Mode Bureau - Visionneuse PDF intégrée
               </p>
             </motion.div>
           </motion.div>
@@ -523,21 +499,24 @@ export default function S1Algebre() {
             transition={{ duration: 0.6, delay: 0.3 }}
             style={{
               background: "white",
-              borderRadius: "24px",
+              borderRadius: "18px",
               overflow: "hidden",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+              boxShadow: "0 8px 30px rgba(0,0,0,0.08)",
               height: "calc(100vh - 80px)",
-              minHeight: "700px"
+              minHeight: "700px",
+              display: "flex",
+              flexDirection: "column"
             }}
           >
             {/* PDF Viewer Header */}
             <div style={{
-              padding: "20px 30px",
+              padding: "18px 28px",
               background: "#1F2937",
               color: "white",
               display: "flex",
               alignItems: "center",
-              gap: "16px"
+              gap: "16px",
+              flexShrink: 0
             }}>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -545,20 +524,26 @@ export default function S1Algebre() {
               >
                 <MdViewInAr size={24} />
               </motion.div>
-              <div>
+              <div style={{ overflow: "hidden" }}>
                 <h3 style={{
                   fontSize: "1.25rem",
                   fontWeight: "600",
-                  margin: "0 0 4px"
+                  margin: "0 0 4px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis"
                 }}>
-                  Visionneuse PDF
+                  {currentPdf?.title || getChapterName(selectedPdf)}
                 </h3>
                 <p style={{
                   fontSize: "0.875rem",
                   margin: 0,
-                  opacity: 0.8
+                  opacity: 0.8,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis"
                 }}>
-                  {currentPdf?.title || getChapterName(selectedPdf)} - {selectedPdf}
+                  {selectedPdf}
                 </p>
               </div>
             </div>
@@ -570,7 +555,7 @@ export default function S1Algebre() {
                 title={currentPdf?.title || getChapterName(selectedPdf)}
                 style={{
                   width: "100%",
-                  height: "calc(100% - 80px)",
+                  flex: 1,
                   border: "none",
                   background: "#F9FAFB"
                 }}
@@ -578,7 +563,7 @@ export default function S1Algebre() {
               />
             ) : (
               <div style={{
-                height: "calc(100% - 80px)",
+                flex: 1,
                 background: "#F9FAFB",
                 display: "flex",
                 alignItems: "center",
@@ -612,13 +597,13 @@ export default function S1Algebre() {
     );
   }
 
-  // Mobile Layout with white background and flat buttons
+  // Mobile Layout
   return (
     <div style={{
       minHeight: "100vh",
       background: "#ffffff",
       padding: "20px 16px",
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', sans-serif"
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
     }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -628,9 +613,9 @@ export default function S1Algebre() {
           background: "white",
           borderRadius: "16px",
           padding: "24px 20px",
-          boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
           minHeight: "calc(100vh - 40px)",
-          maxWidth: "400px",
+          maxWidth: "500px",
           margin: "0 auto",
           border: "1px solid #F3F4F6"
         }}
@@ -644,7 +629,7 @@ export default function S1Algebre() {
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            marginBottom: "32px",
+            marginBottom: "28px",
             paddingBottom: "20px",
             borderBottom: "1px solid #F3F4F6"
           }}
@@ -652,7 +637,7 @@ export default function S1Algebre() {
           <div style={{
             padding: "10px",
             background: "#8B5CF6",
-            borderRadius: "8px",
+            borderRadius: "10px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
@@ -680,7 +665,7 @@ export default function S1Algebre() {
         </motion.div>
 
         {/* Chapter Selection */}
-        <div style={{ marginBottom: "32px" }}>
+        <div style={{ marginBottom: "28px" }}>
           <AnimatePresence>
             {pdfFiles.map((pdf, index) => (
               <motion.button
@@ -695,17 +680,21 @@ export default function S1Algebre() {
                   background: selectedPdf === pdf.filename ? "#8B5CF6" : "#F9FAFB",
                   color: selectedPdf === pdf.filename ? "white" : "#374151",
                   border: "none",
-                  borderRadius: "8px",
+                  borderRadius: "12px",
                   padding: "16px",
                   fontSize: "1rem",
                   fontWeight: "500",
                   cursor: "pointer",
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                   textAlign: "left",
-                  transition: "all 0.2s ease"
+                  transition: "all 0.2s ease",
+                  boxShadow: selectedPdf === pdf.filename ? "0 4px 6px rgba(139, 92, 246, 0.3)" : "0 2px 4px rgba(0,0,0,0.05)"
                 }}
               >
-                <div style={{ marginBottom: "4px" }}>
+                <div style={{ 
+                  marginBottom: "4px",
+                  fontWeight: selectedPdf === pdf.filename ? "600" : "500"
+                }}>
                   {getChapterName(pdf.filename)}
                 </div>
                 <div style={{
@@ -723,69 +712,31 @@ export default function S1Algebre() {
         <div style={{
           display: "flex",
           flexDirection: "column",
-          gap: "12px",
-          marginBottom: "32px"
+          gap: "14px",
+          marginBottom: "28px"
         }}>
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => downloadPdf(selectedPdf)}
+          <ActionButton 
+            onClick={() => downloadPdf(selectedPdf)} 
+            color="#EF4444" 
+            icon={MdCloudDownload}
             disabled={!selectedPdf}
-            style={{
-              width: "100%",
-              background: selectedPdf ? "#EF4444" : "#D1D5DB",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "16px 20px",
-              fontSize: "1rem",
-              fontWeight: "500",
-              cursor: selectedPdf ? "pointer" : "not-allowed",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.2s ease",
-              opacity: selectedPdf ? 1 : 0.6
-            }}
+            isMobile={isMobile}
           >
-            <MdCloudDownload size={20} />
             Télécharger
-          </motion.button>
+          </ActionButton>
 
-          <motion.a
+          <ActionButton 
+            as="a"
             href={getPdfUrl(selectedPdf)}
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            whileTap={{ scale: 0.98 }}
-            style={{
-              width: "100%",
-              background: selectedPdf ? "#10B981" : "#D1D5DB",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              padding: "16px 20px",
-              fontSize: "1rem",
-              fontWeight: "500",
-              cursor: selectedPdf ? "pointer" : "not-allowed",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.2s ease",
-              textDecoration: "none",
-              opacity: selectedPdf ? 1 : 0.6,
-              pointerEvents: selectedPdf ? "auto" : "none"
-            }}
+            color="#10B981" 
+            icon={MdOpenInNew}
+            disabled={!selectedPdf}
+            isMobile={isMobile}
           >
-            <MdOpenInNew size={20} />
-            Ouvrir
-          </motion.a>
+            Ouvrir dans un nouvel onglet
+          </ActionButton>
         </div>
 
         {/* Mobile Info Card */}
@@ -796,7 +747,7 @@ export default function S1Algebre() {
           style={{
             padding: "20px",
             background: "#F9FAFB",
-            borderRadius: "8px",
+            borderRadius: "12px",
             textAlign: "center",
             border: "1px solid #F3F4F6"
           }}
@@ -816,7 +767,7 @@ export default function S1Algebre() {
             margin: 0,
             lineHeight: "1.5"
           }}>
-            Sélectionnez un chapitre puis utilisez "Ouvrir" pour une lecture en plein écran
+            Pour une meilleure expérience, ouvrez les PDFs dans un nouvel onglet
           </p>
         </motion.div>
 
