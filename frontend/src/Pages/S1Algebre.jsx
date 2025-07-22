@@ -112,6 +112,15 @@ export default function S1Algebre() {
     }
   };
 
+  const openInNewTab = (filename) => {
+    if (!filename) {
+      alert("Aucun PDF sélectionné.");
+      return;
+    }
+    const url = getPdfUrl(filename);
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const getChapterName = (filename) => {
     if (!filename) return "Chapitre";
     const lower = filename.toLowerCase();
@@ -453,10 +462,7 @@ export default function S1Algebre() {
               </ActionButton>
 
               <ActionButton 
-                as="a"
-                href={getPdfUrl(selectedPdf)}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => openInNewTab(selectedPdf)}
                 color="#10B981" 
                 icon={MdOpenInNew}
                 disabled={!selectedPdf}
@@ -726,10 +732,7 @@ export default function S1Algebre() {
           </ActionButton>
 
           <ActionButton 
-            as="a"
-            href={getPdfUrl(selectedPdf)}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={() => openInNewTab(selectedPdf)}
             color="#10B981" 
             icon={MdOpenInNew}
             disabled={!selectedPdf}
